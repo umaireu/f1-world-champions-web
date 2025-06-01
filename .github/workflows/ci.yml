@@ -1,0 +1,26 @@
+name: Integration Pipeline
+
+on:
+  pull_request:
+    branches: [main, develop]
+  # Remove push triggers for protected branches - only allow through PRs
+  # push:
+  #   branches: [main, develop]
+
+jobs:
+  install-dependencies:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 🔧 Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: 📦 Install Dependencies
+        run: npm ci
