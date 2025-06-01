@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
       - name: 🔧 Setup
         uses: ./.github/actions/setup
 
@@ -30,6 +33,9 @@ jobs:
     needs: install-dependencies
 
     steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
       - name: 🔧 Setup
         uses: ./.github/actions/setup
 
@@ -47,6 +53,9 @@ jobs:
     needs: install-dependencies
 
     steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
       - name: 🔧 Setup
         uses: ./.github/actions/setup
 
@@ -57,11 +66,31 @@ jobs:
         run: |
           echo "✅ All tests passed!"
 
+  # Stage 4: Build
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    needs: [linting, test]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+      - name: ✅ Build completed successfully
+        run: |
+          echo "✅ Build completed successfully!"
+
   # Summary Job
   ci-summary:
     name: 📋 CI Summary
     runs-on: ubuntu-latest
-    needs: [install-dependencies, linting, test]
+    needs: [install-dependencies, linting, test, build]
     if: always()
 
     steps:
@@ -76,11 +105,11 @@ jobs:
           echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.testing.result }}" == "success" ]]; then
+          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
             echo "🏆 **All stages completed successfully! Ready for merge!**" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **Some stages failed. Please review and fix issues.**" >> $GITHUB_STEP_SUMMARY
