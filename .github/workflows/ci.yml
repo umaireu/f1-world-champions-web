@@ -3,7 +3,6 @@ name: CI Pipeline
 on:
   pull_request:
     branches: [main, develop]
-    types: [opened, synchronize, reopened]
   # Remove push triggers for protected branches - only allow through PRs
   # push:
   #   branches: [main, develop]
