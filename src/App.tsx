@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-      <h1>F1 World Champions</h1>
+      <h1 className='text-3xl font-bold underline'>F1 World Champions</h1>
       <div className='card'>
         <button
           onClick={() => {
