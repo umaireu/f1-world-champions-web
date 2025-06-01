@@ -20,12 +20,6 @@ jobs:
       - name: 🔧 Setup
         uses: ./.github/actions/setup
 
-      - name: ✅ Dependencies installed successfully
-        run: |
-          echo "✅ Dependencies installation completed"
-          echo "📊 Node.js version: $(node --version)"
-          echo "📊 npm version: $(npm --version)"
-
   # Stage 2: Linting
   linting:
     name: 🔍 Linting
@@ -41,10 +35,6 @@ jobs:
 
       - name: 🔍 Run ESLint
         run: npm run lint
-
-      - name: ✅ Linting completed successfully
-        run: |
-          echo "✅ linting checks passed!"
 
   # Stage 3: Testing
   test:
@@ -62,10 +52,6 @@ jobs:
       - name: 🧪 Run tests
         run: npm run test:run
 
-      - name: ✅ Testing completed successfully
-        run: |
-          echo "✅ All tests passed!"
-
   # Stage 4: Build
   build:
     name: 🏗️ Build
@@ -81,10 +67,6 @@ jobs:
 
       - name: 🏗️ Build application
         run: npm run build
-
-      - name: ✅ Build completed successfully
-        run: |
-          echo "✅ Build completed successfully!"
 
   # Summary Job
   ci-summary:
