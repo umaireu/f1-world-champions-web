@@ -1,4 +1,4 @@
-name: Integration Pipeline
+name: CI Pipeline
 
 on:
   pull_request:
@@ -8,19 +8,91 @@ on:
   #   branches: [main, develop]
 
 jobs:
+  # Stage 1: Install Dependencies
   install-dependencies:
-    name: Install Dependencies
+    name: 📦 Install Dependencies
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x]
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
-      - name: 🔧 Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - name: 📦 Install Dependencies
-        run: npm ci
+
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
+
+  # Stage 2: Linting
+  linting:
+    name: 🔍 Linting
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
+
+      - name: 🔍 Run ESLint
+        run: npm run lint
+
+  # Stage 3: Testing
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
+
+      - name: 🧪 Run tests
+        run: npm run test:run
+
+  # Stage 4: Build
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    needs: [linting, test]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+  # Summary Job
+  ci-summary:
+    name: 📋 CI Summary
+    runs-on: ubuntu-latest
+    needs: [install-dependencies, linting, test, build]
+    if: always()
+
+    steps:
+      - name: 📋 Generate CI Summary
+        run: |
+          echo "## 🏎️ F1 World Champions CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Stage Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
+            echo "🏆 **All stages completed successfully! Ready for merge!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Some stages failed. Please review and fix issues.**" >> $GITHUB_STEP_SUMMARY
+          fi
