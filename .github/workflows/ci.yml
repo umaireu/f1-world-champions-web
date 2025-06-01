@@ -1,11 +1,14 @@
 name: CI Pipeline
 
 on:
+  # Run on Pull Requests (for pre-merge validation)
   pull_request:
     branches: [main, develop]
-  # Remove push triggers for protected branches - only allow through PRs
-  # push:
-  #   branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+  # Run on Push to main/develop (for post-merge validation)
+  push:
+    branches: [main, develop]
 
 jobs:
   # Stage 1: Install Dependencies
@@ -78,7 +81,30 @@ jobs:
     steps:
       - name: 📋 Generate CI Summary
         run: |
-          echo "## 🏎️ F1 World Champions CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          # Determine if this is the default/primary branch
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          CURRENT_BRANCH="${{ github.ref_name }}"
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "## 🏎️ F1 World Champions PR Validation Results" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Pull Request:** #${{ github.event.number }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Target Branch:** ${{ github.base_ref }}" >> $GITHUB_STEP_SUMMARY
+            if [[ "${{ github.base_ref }}" == "$DEFAULT_BRANCH" ]]; then
+              echo "**Type:** Merging to default branch 🎯" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**Type:** Merging to feature branch 🔀" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "## 🏎️ F1 World Champions Post-Merge Validation" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+            if [[ "$CURRENT_BRANCH" == "$DEFAULT_BRANCH" ]]; then
+              echo "**Type:** Default branch validation 🎯" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**Type:** Feature branch validation 🔀" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 Stage Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -92,7 +118,15 @@ jobs:
           echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
-            echo "🏆 **All stages completed successfully! Ready for merge!**" >> $GITHUB_STEP_SUMMARY
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "🏆 **All checks passed! PR is ready for merge into ${{ github.base_ref }}!**" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "🏆 **Post-merge validation successful! Branch ${{ github.ref_name }} is healthy!**" >> $GITHUB_STEP_SUMMARY
+            fi
           else
-            echo "⚠️ **Some stages failed. Please review and fix issues.**" >> $GITHUB_STEP_SUMMARY
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "⚠️ **Some checks failed. Please fix issues before merging into ${{ github.base_ref }}.**" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "⚠️ **Post-merge validation failed! Branch ${{ github.ref_name }} needs attention!**" >> $GITHUB_STEP_SUMMARY
+            fi
           fi
