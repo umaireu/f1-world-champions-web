@@ -13,105 +13,42 @@ jobs:
     name: 📦 Install Dependencies
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 📂 Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
 
       - name: ✅ Dependencies installed successfully
         run: |
           echo "✅ Dependencies installation completed"
           echo "📊 Node.js version: $(node --version)"
           echo "📊 npm version: $(npm --version)"
-          echo "📂 node_modules cached for subsequent jobs"
 
   # Stage 2: Linting
   linting:
-    name: 🔍 Code Linting
+    name: 🔍 Linting
     runs-on: ubuntu-latest
     needs: install-dependencies
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: 📂 Restore node_modules cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-      - name: 📦 Install dependencies (if cache miss)
-        run: npm ci
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
 
       - name: 🔍 Run ESLint
         run: npm run lint
+
       - name: ✅ Linting completed successfully
         run: |
           echo "✅ linting checks passed!"
 
   # Stage 3: Testing
-  testing:
-    name: 🧪 Run Tests
+  test:
+    name: 🧪 Tests
     runs-on: ubuntu-latest
     needs: install-dependencies
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: 📂 Restore node_modules cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-      - name: 📦 Install dependencies (if cache miss)
-        run: npm ci
+      - name: 🔧 Setup
+        uses: ./.github/actions/setup
 
       - name: 🧪 Run tests
         run: npm run test:run
@@ -124,7 +61,7 @@ jobs:
   ci-summary:
     name: 📋 CI Summary
     runs-on: ubuntu-latest
-    needs: [install-dependencies, linting, testing]
+    needs: [install-dependencies, linting, test]
     if: always()
 
     steps:
@@ -138,7 +75,8 @@ jobs:
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Testing | ${{ needs.testing.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
