@@ -1,0 +1,16 @@
+name: 'Standard Security Analysis'
+
+# Use standard security query packs
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+
+# Scan src folder and dependencies
+paths:
+  - src
+
+# Exclude build artifacts and node_modules from scanning
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
