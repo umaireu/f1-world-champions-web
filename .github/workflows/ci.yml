@@ -10,8 +10,32 @@ on:
   push:
     branches: [main, develop]
 
+  # Manual trigger with stage control
+  workflow_dispatch:
+    inputs:
+      run_linting:
+        description: 'Run linting stage'
+        required: false
+        default: true
+        type: boolean
+      run_testing:
+        description: 'Run testing stage'
+        required: false
+        default: true
+        type: boolean
+      run_security:
+        description: 'Run security analysis'
+        required: false
+        default: true
+        type: boolean
+      run_build:
+        description: 'Run build stage'
+        required: false
+        default: true
+        type: boolean
+
 jobs:
-  # Stage 1: Install Dependencies
+  # Stage 1: Install Dependencies (always runs)
   install-dependencies:
     name: 📦 Install Dependencies
     runs-on: ubuntu-latest
@@ -23,11 +47,12 @@ jobs:
       - name: 🔧 Setup
         uses: ./.github/actions/setup
 
-  # Stage 2: Linting
+  # Stage 2: Linting (conditional)
   linting:
     name: 🔍 Linting
     runs-on: ubuntu-latest
     needs: install-dependencies
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_linting }}
 
     steps:
       - name: 📥 Checkout repository
@@ -39,11 +64,12 @@ jobs:
       - name: 🔍 Run ESLint
         run: npm run lint
 
-  # Stage 3: Testing
+  # Stage 3: Testing (conditional)
   test:
     name: 🧪 Tests
     runs-on: ubuntu-latest
     needs: install-dependencies
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_testing }}
 
     steps:
       - name: 📥 Checkout repository
@@ -55,11 +81,12 @@ jobs:
       - name: 🧪 Run tests
         run: npm run test:run
 
-  # Stage 4: CodeQL Security Analysis
+  # Stage 4: CodeQL Security Analysis (conditional)
   codeql:
     name: 🔒 Security
     runs-on: ubuntu-latest
     needs: [linting, test]
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_security }}
     permissions:
       security-events: write
       packages: read
@@ -85,11 +112,12 @@ jobs:
         with:
           category: '/language:javascript'
 
-  # Stage 5: Build
+  # Stage 5: Build (conditional)
   build:
     name: 🏗️ Build
     runs-on: ubuntu-latest
     needs: [linting, test, codeql]
+    if: ${{ always() && (github.event_name != 'workflow_dispatch' || inputs.run_build) && !contains(needs.*.result, 'failure') }}
 
     steps:
       - name: 📥 Checkout repository
@@ -125,6 +153,17 @@ jobs:
             else
               echo "**Type:** Merging to feature branch 🔀" >> $GITHUB_STEP_SUMMARY
             fi
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "## 🏎️ F1 World Champions Manual CI Run" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Type:** Manual execution 🎮" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 🎛️ Stage Configuration" >> $GITHUB_STEP_SUMMARY
+            echo "- **Linting:** ${{ inputs.run_linting && '✅ Enabled' || '⏭️ Skipped' }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Testing:** ${{ inputs.run_testing && '✅ Enabled' || '⏭️ Skipped' }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Security:** ${{ inputs.run_security && '✅ Enabled' || '⏭️ Skipped' }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Build:** ${{ inputs.run_build && '✅ Enabled' || '⏭️ Skipped' }}" >> $GITHUB_STEP_SUMMARY
           else
             echo "## 🏎️ F1 World Champions Post-Merge Validation" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -140,25 +179,48 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔒 Security (CodeQL) | ${{ needs.codeql.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || needs.install-dependencies.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || needs.linting.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || needs.test.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Security (CodeQL) | ${{ needs.codeql.result == 'success' && '✅ Success' || needs.codeql.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || needs.build.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.codeql.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
+
+          # Check if any non-skipped stages failed
+          FAILED_STAGES=""
+          if [[ "${{ needs.install-dependencies.result }}" == "failure" ]]; then
+            FAILED_STAGES="Dependencies"
+          fi
+          if [[ "${{ needs.linting.result }}" == "failure" ]]; then
+            FAILED_STAGES="$FAILED_STAGES Linting"
+          fi
+          if [[ "${{ needs.test.result }}" == "failure" ]]; then
+            FAILED_STAGES="$FAILED_STAGES Testing"
+          fi
+          if [[ "${{ needs.codeql.result }}" == "failure" ]]; then
+            FAILED_STAGES="$FAILED_STAGES Security"
+          fi
+          if [[ "${{ needs.build.result }}" == "failure" ]]; then
+            FAILED_STAGES="$FAILED_STAGES Build"
+          fi
+
+          if [[ -z "$FAILED_STAGES" ]]; then
             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              echo "🏆 **All checks passed! PR is ready for merge into ${{ github.base_ref }}!**" >> $GITHUB_STEP_SUMMARY
+              echo "🏆 **All enabled checks passed! PR is ready for merge into ${{ github.base_ref }}!**" >> $GITHUB_STEP_SUMMARY
+            elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+              echo "🏆 **Manual CI run completed successfully! All enabled stages passed!**" >> $GITHUB_STEP_SUMMARY
             else
               echo "🏆 **Post-merge validation successful! Branch ${{ github.ref_name }} is healthy!**" >> $GITHUB_STEP_SUMMARY
             fi
           else
             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              echo "⚠️ **Some checks failed. Please fix issues before merging into ${{ github.base_ref }}.**" >> $GITHUB_STEP_SUMMARY
+              echo "⚠️ **Some checks failed:$FAILED_STAGES. Please fix issues before merging.**" >> $GITHUB_STEP_SUMMARY
+            elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+              echo "⚠️ **Manual CI run failed:$FAILED_STAGES. Please review and fix issues.**" >> $GITHUB_STEP_SUMMARY
             else
-              echo "⚠️ **Post-merge validation failed! Branch ${{ github.ref_name }} needs attention!**" >> $GITHUB_STEP_SUMMARY
+              echo "⚠️ **Post-merge validation failed:$FAILED_STAGES! Branch needs attention!**" >> $GITHUB_STEP_SUMMARY
             fi
           fi
 
