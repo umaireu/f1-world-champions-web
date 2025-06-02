@@ -118,7 +118,7 @@ jobs:
   ci-summary:
     name: 📋 CI Summary
     runs-on: ubuntu-latest
-    needs: [install-dependencies, linting, test, build]
+    needs: [install-dependencies, linting, test, security, build]
     if: always()
 
     steps:
@@ -156,11 +156,12 @@ jobs:
           echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Security (CodeQL) | ${{ needs.security.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
+          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.security.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
               echo "🏆 **All checks passed! PR is ready for merge into ${{ github.base_ref }}!**" >> $GITHUB_STEP_SUMMARY
             else
@@ -172,4 +173,13 @@ jobs:
             else
               echo "⚠️ **Post-merge validation failed! Branch ${{ github.ref_name }} needs attention!**" >> $GITHUB_STEP_SUMMARY
             fi
+          fi
+
+          # Add security specific information
+          if [[ "${{ needs.security.result }}" == "success" ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 🔒 Security Analysis Details" >> $GITHUB_STEP_SUMMARY
+            echo "- **Languages:** GitHub Actions, JavaScript/TypeScript" >> $GITHUB_STEP_SUMMARY
+            echo "- **Analysis:** Multi-language matrix security scanning" >> $GITHUB_STEP_SUMMARY
+            echo "- **Results:** Available in Security tab → Code scanning alerts" >> $GITHUB_STEP_SUMMARY
           fi
