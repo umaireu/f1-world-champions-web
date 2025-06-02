@@ -49,11 +49,38 @@ jobs:
           category: '/language:javascript'
           upload: true
 
-      - name: 🔍 Check for Security Alerts
+      - name: 🔍 Check for Security Vulnerabilities
         run: |
-          echo "CodeQL analysis completed. Results uploaded to Security tab."
-          echo "If critical security issues are found, this workflow will fail."
-          echo "Check the Security tab for detailed findings."
+          echo "Waiting for CodeQL results to be processed..."
+          sleep 30
+
+          # Get the latest code scanning alerts for this commit
+          ALERTS=$(curl -s -H "Authorization: token ${{ github.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?state=open&ref=${{ github.ref }}")
+
+          # Count critical and high severity alerts
+          CRITICAL_COUNT=$(echo "$ALERTS" | jq '[.[] | select(.rule.security_severity_level == "critical")] | length')
+          HIGH_COUNT=$(echo "$ALERTS" | jq '[.[] | select(.rule.security_severity_level == "high")] | length')
+          TOTAL_COUNT=$(echo "$ALERTS" | jq 'length')
+
+          echo "🔍 Security Scan Results:"
+          echo "📊 Total alerts: $TOTAL_COUNT"
+          echo "🔴 Critical severity: $CRITICAL_COUNT"
+          echo "🟠 High severity: $HIGH_COUNT"
+
+          if [ "$CRITICAL_COUNT" -gt 0 ] || [ "$HIGH_COUNT" -gt 0 ]; then
+            echo ""
+            echo "❌ SECURITY FAILURE: Critical or high severity vulnerabilities detected!"
+            echo "🚨 Found $CRITICAL_COUNT critical and $HIGH_COUNT high severity issues"
+            echo "🔗 View details in Security tab: https://github.com/${{ github.repository }}/security/code-scanning"
+            echo ""
+            echo "Security issues found:"
+            echo "$ALERTS" | jq -r '.[] | select(.rule.security_severity_level == "critical" or .rule.security_severity_level == "high") | "- \(.rule.name): \(.most_recent_instance.location.path):\(.most_recent_instance.location.start_line)"'
+            exit 1
+          else
+            echo "✅ No critical or high severity vulnerabilities detected"
+          fi
 
   # Stage 2: Linting
   linting:
