@@ -57,9 +57,9 @@ jobs:
 
   # Stage 4: CodeQL Security Analysis
   codeql:
-    name: 🔒 Security Analysis (CodeQL)
+    name: 🔒 Security
     runs-on: ubuntu-latest
-    needs: install-dependencies
+    needs: [linting, test]
     permissions:
       security-events: write
       packages: read
