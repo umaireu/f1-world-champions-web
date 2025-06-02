@@ -55,11 +55,41 @@ jobs:
       - name: 🧪 Run tests
         run: npm run test:run
 
-  # Stage 4: Build
+  # Stage 4: CodeQL Security Analysis
+  codeql:
+    name: 🔒 Security Analysis (CodeQL)
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔒 Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript # Covers both JavaScript and TypeScript
+          config: |
+            name: "CodeQL Config"
+            queries:
+              - uses: security-and-quality
+              - uses: security-extended
+
+      - name: 🔒 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:javascript'
+
+  # Stage 5: Build
   build:
     name: 🏗️ Build
     runs-on: ubuntu-latest
-    needs: [linting, test]
+    needs: [linting, test, codeql]
 
     steps:
       - name: 📥 Checkout repository
@@ -75,7 +105,7 @@ jobs:
   ci-summary:
     name: 📋 CI Summary
     runs-on: ubuntu-latest
-    needs: [install-dependencies, linting, test, build]
+    needs: [install-dependencies, linting, test, codeql, build]
     if: always()
 
     steps:
@@ -113,11 +143,12 @@ jobs:
           echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Security (CodeQL) | ${{ needs.codeql.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
+          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.codeql.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
               echo "🏆 **All checks passed! PR is ready for merge into ${{ github.base_ref }}!**" >> $GITHUB_STEP_SUMMARY
             else
@@ -129,4 +160,13 @@ jobs:
             else
               echo "⚠️ **Post-merge validation failed! Branch ${{ github.ref_name }} needs attention!**" >> $GITHUB_STEP_SUMMARY
             fi
+          fi
+
+          # Add CodeQL specific information
+          if [[ "${{ needs.codeql.result }}" == "success" ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 🔒 Security Analysis Details" >> $GITHUB_STEP_SUMMARY
+            echo "- **Language:** JavaScript/TypeScript" >> $GITHUB_STEP_SUMMARY
+            echo "- **Query Suite:** Security and Quality + Security Extended" >> $GITHUB_STEP_SUMMARY
+            echo "- **Results:** Available in Security tab → Code scanning alerts" >> $GITHUB_STEP_SUMMARY
           fi
