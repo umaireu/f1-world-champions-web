@@ -11,7 +11,7 @@ export default defineConfig({
     css: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json-summary', 'html'],
       exclude: [
         'node_modules/',
         'src/**/*.test.{js,ts,tsx}',
@@ -33,8 +33,15 @@ export default defineConfig({
       },
       // Fail tests if coverage is below thresholds
       reportOnFailure: true,
-      skipFull: false,
+      // Enable watermarks to see threshold status
+      watermarks: {
+        statements: [70, 90],
+        functions: [70, 90],
+        branches: [70, 90],
+        lines: [70, 90],
+      },
       all: true,
+      skipFull: false,
     },
   },
 });
