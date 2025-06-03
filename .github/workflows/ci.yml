@@ -2,8 +2,6 @@ name: CI Pipeline
 
 permissions:
   contents: read
-  security-events: write
-  pull-requests: write
 
 on:
   pull_request:
@@ -45,6 +43,9 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
     needs: install-dependencies
 
     steps:
@@ -88,8 +89,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Security Analysis
-        uses: ./.github/actions/security
+      - name: setup-node-dependencies
+        uses: ./.github/actions/setup-node-dependencies
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:javascript-typescript'
+
+      - name: Run npm audit
+        run: |
+          echo "Running npm security audit..."
+          npm audit --audit-level=moderate --output=json > audit-report.json || npm audit --audit-level=moderate
+
+          # Check if audit found vulnerabilities
+          if npm audit --audit-level=moderate --dry-run >/dev/null 2>&1; then
+            echo "✅ No security vulnerabilities found"
+          else
+            echo "❌ Security vulnerabilities detected!"
+            npm audit --audit-level=moderate
+            exit 1
+          fi
 
   # Stage 5: Build
   build:
