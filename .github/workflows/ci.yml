@@ -45,6 +45,8 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     needs: install-dependencies
+    outputs:
+      coverage-lines: ${{ steps.coverage.outputs.lines }}
 
     steps:
       - name: Checkout repository
@@ -57,14 +59,14 @@ jobs:
         run: npm run test:coverage:ci
 
       - name: Generate coverage summary
+        id: coverage
         if: always()
         run: |
           if [ -f coverage/coverage-summary.json ]; then
-            echo "COVERAGE_DATA<<EOF" >> $GITHUB_ENV
-            cat coverage/coverage-summary.json >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            COVERAGE_LINES=$(node -e "const c = JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json', 'utf8')); console.log(c.total.lines.pct);")
+            echo "lines=$COVERAGE_LINES" >> $GITHUB_OUTPUT
           else
-            echo "COVERAGE_DATA=null" >> $GITHUB_ENV
+            echo "lines=0" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload coverage reports to GitHub
@@ -128,3 +130,4 @@ jobs:
           github-base-ref: ${{ github.base_ref }}
           github-ref-name: ${{ github.ref_name }}
           default-branch: ${{ github.event.repository.default_branch }}
+          coverage-lines: ${{ needs.test.outputs.coverage-lines || 'N/A' }}

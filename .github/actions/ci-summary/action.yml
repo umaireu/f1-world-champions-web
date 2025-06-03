@@ -32,6 +32,22 @@ inputs:
   default-branch:
     description: 'Repository default branch'
     required: true
+  coverage-statements:
+    description: 'Coverage statements percentage'
+    required: false
+    default: 'N/A'
+  coverage-branches:
+    description: 'Coverage branches percentage'
+    required: false
+    default: 'N/A'
+  coverage-functions:
+    description: 'Coverage functions percentage'
+    required: false
+    default: 'N/A'
+  coverage-lines:
+    description: 'Coverage lines percentage'
+    required: false
+    default: 'N/A'
 
 runs:
   using: 'composite'
@@ -74,6 +90,18 @@ runs:
         echo "|  Security| ${{ inputs.security-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "|  Build | ${{ inputs.build-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
+
+        # Simple coverage info
+        if [[ "${{ inputs.coverage-lines }}" != "N/A" ]]; then
+          echo "**Coverage:** ${{ inputs.coverage-lines }}% lines" >> $GITHUB_STEP_SUMMARY
+          if (( $(echo "${{ inputs.coverage-lines }} < 70" | bc -l) )); then
+            echo " ❌ Below 70% threshold" >> $GITHUB_STEP_SUMMARY
+          else
+            echo " ✅ Meets 70% threshold" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+        fi
+
         echo "###  Overall Status" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         if [[ "${{ inputs.install-dependencies-result }}" == "success" && "${{ inputs.linting-result }}" == "success" && "${{ inputs.test-result }}" == "success" && "${{ inputs.security-result }}" == "success" && "${{ inputs.build-result }}" == "success" ]]; then
