@@ -74,6 +74,7 @@ runs:
         echo "|  Security| ${{ inputs.security-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "|  Build | ${{ inputs.build-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
+
         echo "###  Overall Status" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         if [[ "${{ inputs.install-dependencies-result }}" == "success" && "${{ inputs.linting-result }}" == "success" && "${{ inputs.test-result }}" == "success" && "${{ inputs.security-result }}" == "success" && "${{ inputs.build-result }}" == "success" ]]; then
