@@ -78,14 +78,14 @@ runs:
         echo "" >> $GITHUB_STEP_SUMMARY
         if [[ "${{ inputs.install-dependencies-result }}" == "success" && "${{ inputs.linting-result }}" == "success" && "${{ inputs.test-result }}" == "success" && "${{ inputs.security-result }}" == "success" && "${{ inputs.build-result }}" == "success" ]]; then
           if [[ "${{ inputs.github-event-name }}" == "pull_request" ]]; then
-            echo "**All checks passed! PR is ready for merge into ${{ inputs.github-base-ref }}!**" >> $GITHUB_STEP_SUMMARY
+            echo "All checks passed! PR is ready for merge into ${{ inputs.github-base-ref }}" >> $GITHUB_STEP_SUMMARY
           else
-            echo "** Branch ${{ inputs.github-ref-name }} is healthy!**" >> $GITHUB_STEP_SUMMARY
+            echo "Branch ${{ inputs.github-ref-name }} is healthy ✅" >> $GITHUB_STEP_SUMMARY
           fi
         else
           if [[ "${{ inputs.github-event-name }}" == "pull_request" ]]; then
-            echo "**Some checks failed. Please fix issues before merging into ${{ inputs.github-base-ref }}.**" >> $GITHUB_STEP_SUMMARY
+            echo "Some checks failed. Please fix issues before merging into ${{ inputs.github-base-ref }} ❗" >> $GITHUB_STEP_SUMMARY
           else
-            echo "**Branch ${{ inputs.github-ref-name }} needs attention!**" >> $GITHUB_STEP_SUMMARY
+            echo "Post-merge validation failed! Branch ${{ inputs.github-ref-name }} needs attention ❗" >> $GITHUB_STEP_SUMMARY
           fi
         fi
