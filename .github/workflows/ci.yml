@@ -55,28 +55,7 @@ jobs:
         uses: ./.github/actions/setup-node-dependencies
 
       - name: Run tests with coverage
-        run: npm run test:coverage:ci
-
-      - name: Report Coverage
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          vite-config-path: vitest.config.ts
-
-      - name: Extract Coverage Percentage
-        if: always()
-        id: coverage
-        uses: notiz-dev/github-action-json-property@release
-        with:
-          path: 'coverage/coverage-summary.json'
-          prop_path: 'total.lines.pct'
-
-      - name: Overall Coverage Summary
-        if: always()
-        uses: ./.github/actions/coverage-summary
-        with:
-          coverage-percentage: ${{ steps.coverage.outputs.prop || '0' }}
-          threshold: '70'
+        run: npm run test:coverage
 
   # Stage 4: Security
   security:
