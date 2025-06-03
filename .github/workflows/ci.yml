@@ -1,8 +1,5 @@
 name: CI Pipeline
 
-permissions:
-  contents: read
-
 on:
   pull_request:
     branches: [main, develop]
@@ -30,6 +27,9 @@ jobs:
     needs: install-dependencies
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup
         uses: ./.github/actions/setup
 
@@ -43,6 +43,9 @@ jobs:
     needs: install-dependencies
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup
         uses: ./.github/actions/setup
 
@@ -56,10 +59,13 @@ jobs:
     needs: [linting, test]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: 🔧 Setup
         uses: ./.github/actions/setup
 
-      - name: 🏗️ Build application
+      - name: Build application
         run: npm run build
 
   # Summary Job
