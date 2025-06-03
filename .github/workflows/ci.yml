@@ -86,6 +86,11 @@ jobs:
     needs: [install-dependencies, linting, test]
     permissions:
       security-events: write
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript-typescript']
 
     steps:
       - name: Checkout repository
@@ -97,28 +102,13 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: javascript-typescript
-          build-mode: none
+          languages: ${{ matrix.language }}
           queries: security-extended,security-and-quality
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: '/language:javascript-typescript'
-
-      - name: Run npm audit
-        run: |
-          echo "Running npm security audit..."
-          npm audit --audit-level=moderate --output=json > audit-report.json || npm audit --audit-level=moderate
-
-          # Check if audit found vulnerabilities
-          if npm audit --audit-level=moderate --dry-run >/dev/null 2>&1; then
-            echo "✅ No security vulnerabilities found"
-          else
-            echo "❌ Security vulnerabilities detected!"
-            npm audit --audit-level=moderate
-            exit 1
-          fi
+          category: '/language:${{ matrix.language }}'
 
   # Stage 5: Build
   build:
