@@ -68,7 +68,7 @@ runs:
         echo "|  Dependencies | ${{ inputs.install-dependencies-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "|  Linting | ${{ inputs.linting-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "|  Testing | ${{ inputs.test-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-        echo "|  Security (CodeQL) | ${{ inputs.security-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "|  Security| ${{ inputs.security-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "|  Build | ${{ inputs.build-result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "###  Overall Status" >> $GITHUB_STEP_SUMMARY
