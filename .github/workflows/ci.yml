@@ -63,6 +63,24 @@ jobs:
         with:
           vite-config-path: vitest.config.ts
 
+      - name: Overall Coverage Summary
+        if: always()
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            COVERAGE_LINES=$(node -e "const c = JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json', 'utf8')); console.log(c.total.lines.pct);")
+            echo "## 📊 Overall Coverage: ${COVERAGE_LINES}%" >> $GITHUB_STEP_SUMMARY
+            if (( $(echo "$COVERAGE_LINES < 70" | bc -l) )); then
+              echo "❌ **Below 70% threshold** - Coverage needs improvement" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "✅ **Meets 70% threshold** - Good coverage!" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## 📊 Overall Coverage: 0%" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Below 70% threshold** - No coverage data found" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Upload coverage reports to GitHub
         uses: actions/upload-artifact@v4
         if: always()
