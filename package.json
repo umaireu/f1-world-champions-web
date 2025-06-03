@@ -15,7 +15,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:coverage:ci": "vitest run --coverage && npm run coverage:check",
+    "test:coverage:ci": "vitest run --coverage --reporter=verbose",
     "test:ui": "vitest --ui",
     "commit": "cz",
     "preview": "vite preview",

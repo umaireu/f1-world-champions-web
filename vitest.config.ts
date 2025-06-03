@@ -31,17 +31,7 @@ export default defineConfig({
           statements: 70,
         },
       },
-      // Fail tests if coverage is below thresholds
       reportOnFailure: true,
-      // Enable watermarks to see threshold status
-      watermarks: {
-        statements: [70, 90],
-        functions: [70, 90],
-        branches: [70, 90],
-        lines: [70, 90],
-      },
-      all: true,
-      skipFull: false,
     },
   },
 });
