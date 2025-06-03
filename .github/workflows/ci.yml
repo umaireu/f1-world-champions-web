@@ -78,14 +78,6 @@ jobs:
           coverage-percentage: ${{ steps.coverage.outputs.prop || '0' }}
           threshold: '70'
 
-      - name: Upload coverage reports to GitHub
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 30
-
   # Stage 4: Security
   security:
     name: Security
