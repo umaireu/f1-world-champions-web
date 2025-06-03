@@ -14,11 +14,27 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
-        'src/test/',
+        'src/**/*.test.{js,ts,tsx}',
+        'src/**/*.spec.{js,ts,tsx}',
         '**/*.d.ts',
         '**/*.config.*',
         'dist/',
+        'src/main.tsx', // Exclude main.tsx from coverage as it's just setup
       ],
+      include: ['src/**/*.{js,ts,tsx}'],
+      // Coverage thresholds - tests will fail if below these percentages
+      thresholds: {
+        global: {
+          branches: 70,
+          functions: 70,
+          lines: 70,
+          statements: 70,
+        },
+      },
+      // Fail tests if coverage is below thresholds
+      reportOnFailure: true,
+      skipFull: false,
+      all: true,
     },
   },
 });

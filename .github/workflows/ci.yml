@@ -53,8 +53,27 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Run tests
-        run: npm run test:run
+      - name: Run tests with coverage
+        run: npm run test:coverage:ci
+
+      - name: Generate coverage summary
+        if: always()
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "COVERAGE_DATA<<EOF" >> $GITHUB_ENV
+            cat coverage/coverage-summary.json >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else
+            echo "COVERAGE_DATA=null" >> $GITHUB_ENV
+          fi
+
+      - name: Upload coverage reports to GitHub
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
 
   # Stage 4: Security
   security:
