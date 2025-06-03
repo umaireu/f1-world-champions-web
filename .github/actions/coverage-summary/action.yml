@@ -1,0 +1,32 @@
+name: 'Coverage Summary'
+description: 'Generate overall coverage summary with threshold checking'
+
+inputs:
+  coverage-percentage:
+    description: 'Coverage percentage value'
+    required: true
+  threshold:
+    description: 'Minimum coverage threshold percentage'
+    required: false
+    default: '70'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate Coverage Summary
+      shell: bash
+      run: |
+        COVERAGE_LINES="${{ inputs.coverage-percentage }}"
+        THRESHOLD="${{ inputs.threshold }}"
+
+        echo "## Overall Coverage: ${COVERAGE_LINES}%" >> $GITHUB_STEP_SUMMARY
+
+        if (( $(echo "$COVERAGE_LINES < $THRESHOLD" | bc -l) )); then
+          echo "❌ **Below ${THRESHOLD}% threshold** - Coverage needs improvement" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "ERROR: Coverage ${COVERAGE_LINES}% is below the required ${THRESHOLD}% threshold"
+          exit 1
+        else
+          echo "✅ **Meets ${THRESHOLD}% threshold** - Good coverage!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+        fi
