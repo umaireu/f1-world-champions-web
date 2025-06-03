@@ -10,6 +10,16 @@ function App() {
     return { __html: input }; // XSS vulnerability - unsanitized user input
   };
 
+  // ANOTHER SECURITY VULNERABILITY - Code injection via eval()
+  const executeUserCode = (code: string): string => {
+    try {
+      // eslint-disable-next-line no-eval
+      return String(eval(code)); // CRITICAL: Code injection vulnerability
+    } catch {
+      return 'Error executing code';
+    }
+  };
+
   return (
     <>
       <h1 className='text-3xl font-bold underline'>F1 World Champions</h1>
@@ -35,6 +45,14 @@ function App() {
             placeholder='Enter some text...'
           />
           <div dangerouslySetInnerHTML={renderUnsafeContent(userInput)} />
+
+          {/* ANOTHER SECURITY TEST - Code injection */}
+          <div>
+            <button onClick={() => executeUserCode(userInput)}>
+              Execute Code (DANGEROUS!)
+            </button>
+            <p>Result: {executeUserCode('2 + 2')}</p>
+          </div>
         </div>
       </div>
       <p className='read-the-docs'>
