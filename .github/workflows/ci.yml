@@ -1,63 +1,60 @@
 name: CI Pipeline
 
 on:
-  # Run on Pull Requests (for pre-merge validation)
   pull_request:
     branches: [main, develop]
     types: [opened, synchronize, reopened]
-
-  # Run on Push to main/develop (for post-merge validation)
   push:
     branches: [main, develop]
 
 jobs:
   # Stage 1: Install Dependencies
   install-dependencies:
-    name: 📦 Install Dependencies
+    name: Install Dependencies
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup
+      - name: Setup
         uses: ./.github/actions/setup
 
   # Stage 2: Linting
   linting:
-    name: 🔍 Linting
+    name: Linting
     runs-on: ubuntu-latest
     needs: install-dependencies
 
     steps:
-      - name: 📥 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup
+      - name: Setup
         uses: ./.github/actions/setup
 
-      - name: 🔍 Run ESLint
+      - name: Run ESLint
         run: npm run lint
 
   # Stage 3: Testing
   test:
-    name: 🧪 Tests
+    name: Tests
     runs-on: ubuntu-latest
     needs: install-dependencies
 
     steps:
-      - name: 📥 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup
+      - name: Setup
         uses: ./.github/actions/setup
 
-      - name: 🧪 Run tests
+      - name: Run tests
         run: npm run test:run
 
   # Stage 4: Build
   build:
-    name: 🏗️ Build
+    name: Build
     runs-on: ubuntu-latest
     needs: [linting, test]
 
@@ -73,60 +70,21 @@ jobs:
 
   # Summary Job
   ci-summary:
-    name: 📋 CI Summary
+    name: CI Summary
     runs-on: ubuntu-latest
     needs: [install-dependencies, linting, test, build]
     if: always()
 
     steps:
-      - name: 📋 Generate CI Summary
-        run: |
-          # Determine if this is the default/primary branch
-          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
-          CURRENT_BRANCH="${{ github.ref_name }}"
-
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "## 🏎️ F1 World Champions PR Validation Results" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Pull Request:** #${{ github.event.number }}" >> $GITHUB_STEP_SUMMARY
-            echo "**Target Branch:** ${{ github.base_ref }}" >> $GITHUB_STEP_SUMMARY
-            if [[ "${{ github.base_ref }}" == "$DEFAULT_BRANCH" ]]; then
-              echo "**Type:** Merging to default branch 🎯" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "**Type:** Merging to feature branch 🔀" >> $GITHUB_STEP_SUMMARY
-            fi
-          else
-            echo "## 🏎️ F1 World Champions Post-Merge Validation" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-            if [[ "$CURRENT_BRANCH" == "$DEFAULT_BRANCH" ]]; then
-              echo "**Type:** Default branch validation 🎯" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "**Type:** Feature branch validation 🔀" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 Stage Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 📦 Dependencies | ${{ needs.install-dependencies.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔍 Linting | ${{ needs.linting.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Testing | ${{ needs.test.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🏗️ Build | ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🏁 Overall Status" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ needs.install-dependencies.result }}" == "success" && "${{ needs.linting.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              echo "🏆 **All checks passed! PR is ready for merge into ${{ github.base_ref }}!**" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "🏆 **Post-merge validation successful! Branch ${{ github.ref_name }} is healthy!**" >> $GITHUB_STEP_SUMMARY
-            fi
-          else
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              echo "⚠️ **Some checks failed. Please fix issues before merging into ${{ github.base_ref }}.**" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "⚠️ **Post-merge validation failed! Branch ${{ github.ref_name }} needs attention!**" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
+      - name: Generate CI Summary
+        uses: ./.github/actions/ci-summary
+        with:
+          install-dependencies-result: ${{ needs.install-dependencies.result }}
+          linting-result: ${{ needs.linting.result }}
+          test-result: ${{ needs.test.result }}
+          build-result: ${{ needs.build.result }}
+          github-event-name: ${{ github.event_name }}
+          github-event-number: ${{ github.event.number }}
+          github-base-ref: ${{ github.base_ref }}
+          github-ref-name: ${{ github.ref_name }}
+          default-branch: ${{ github.event.repository.default_branch }}
