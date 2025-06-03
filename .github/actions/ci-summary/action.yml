@@ -11,6 +11,9 @@ inputs:
   test-result:
     description: 'Result of test job'
     required: true
+  security-result:
+    description: 'Result of security job'
+    required: true
   build-result:
     description: 'Result of build job'
     required: true
