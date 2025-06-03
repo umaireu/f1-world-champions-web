@@ -24,7 +24,7 @@ export default defineConfig({
       include: ['src/**/*.{js,ts,tsx}'],
       // Coverage thresholds - tests will fail if below these percentages
       thresholds: {
-        lines: 90,
+        lines: 95,
       },
       reportOnFailure: true,
     },
