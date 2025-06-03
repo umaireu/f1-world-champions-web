@@ -68,17 +68,22 @@ jobs:
         run: |
           if [ -f coverage/coverage-summary.json ]; then
             COVERAGE_LINES=$(node -e "const c = JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json', 'utf8')); console.log(c.total.lines.pct);")
-            echo "## 📊 Overall Coverage: ${COVERAGE_LINES}%" >> $GITHUB_STEP_SUMMARY
+            echo "## Overall Coverage: ${COVERAGE_LINES}%" >> $GITHUB_STEP_SUMMARY
             if (( $(echo "$COVERAGE_LINES < 70" | bc -l) )); then
               echo "❌ **Below 70% threshold** - Coverage needs improvement" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "ERROR: Coverage ${COVERAGE_LINES}% is below the required 70% threshold"
+              exit 1
             else
               echo "✅ **Meets 70% threshold** - Good coverage!" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
             fi
-            echo "" >> $GITHUB_STEP_SUMMARY
           else
-            echo "## 📊 Overall Coverage: 0%" >> $GITHUB_STEP_SUMMARY
+            echo "## Overall Coverage: 0%" >> $GITHUB_STEP_SUMMARY
             echo "❌ **Below 70% threshold** - No coverage data found" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
+            echo "ERROR: No coverage data found - tests may have failed"
+            exit 1
           fi
 
       - name: Upload coverage reports to GitHub
