@@ -95,6 +95,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: setup-node-dependencies
         uses: ./.github/actions/setup-node-dependencies
@@ -109,6 +111,17 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: '/language:${{ matrix.language }}'
+
+      - name: Check Dependencies Security
+        run: |
+          echo "Checking dependencies for security vulnerabilities..."
+          if npm audit --audit-level=moderate; then
+            echo "✅ No dependency vulnerabilities found"
+          else
+            echo "❌ Dependency vulnerabilities detected!"
+            npm audit --audit-level=moderate
+            exit 1
+          fi
 
   # Stage 5: Build
   build:
