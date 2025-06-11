@@ -1,0 +1,41 @@
+{
+  "pageNotFound": {
+    "title": "Page Not Found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "gotToHome": "Go to Home"
+  },
+  "errorFallback": {
+    "title": "Something went wrong",
+    "description": "We're sorry, but something went wrong. Please try again later.",
+    "reload": "Reload"
+  },
+  "a11y": {
+    "logo": "F1 Logo"
+  },
+  "footer": {
+    "copyright": "© {{year}} F1 World Champions. All rights reserved."
+  },
+  "seasons": {
+    "column": {
+      "season": "Season",
+      "points": "Points",
+      "driverChampion": "Champion",
+      "constructorChampion": "Constructor",
+      "actions": "Actions"
+    },
+    "title": "F1 World Champions",
+    "titleA11y": "F1 World Champions Table",
+    "description": "Championship results showing drivers, constructors, and points by season",
+    "descriptionA11y": "Championship results showing drivers, constructors, and points by season",
+    "viewRaces": "View Races",
+    "points": "Points",
+    "driverChampion": "Driver Champion",
+    "noData": "No championship data available",
+    "showing": "Showing {{count}} championship seasons",
+    "championship": "Formula 1 World Drivers' Championship",
+    "loading": "Loading championship data...",
+    "loadingSubText": "Please wait while we fetch the results"
+  },
+  "loading": "Loading...",
+  "noData": "No data available"
+}
