@@ -13,7 +13,9 @@ describe('loader', () => {
     const message = 'Loading data';
     const subMessage = 'Please wait...';
 
-    const { getByText } = render({ ui: <Loader message={message} /> });
+    const { getByText } = render({
+      ui: <Loader message={message} subMessage={subMessage} />,
+    });
 
     expect(getByText(message)).toBeInTheDocument();
     expect(getByText(subMessage)).toBeInTheDocument();

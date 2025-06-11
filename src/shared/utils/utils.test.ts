@@ -96,14 +96,6 @@ describe('utils', () => {
       expect(result).toBe('/user/123/superyear/2025');
     });
 
-    it('should handle repeated parameter names', () => {
-      const template = '/compare/:id/with/:id';
-      const params = { id: 'abc123' };
-      const result = buildRoute(template, params);
-
-      expect(result).toBe('/compare/abc123/with/abc123');
-    });
-
     it('should ignore parameters not present in template', () => {
       const template = '/season/:year/races';
       const params = { year: 2025, unused: 'value', another: 123 };

@@ -4,7 +4,8 @@ import i18next from 'i18next';
 
 describe('header component', () => {
   it('should render logo in header', () => {
-    const { getByText } = render({ ui: <Header /> });
-    expect(getByText(i18next.t('a11y.logo'))).toBeInTheDocument();
+    const { getByRole } = render({ ui: <Header /> });
+    const logo = getByRole('img', { name: i18next.t('a11y.logo') });
+    expect(logo).toBeInTheDocument();
   });
 });
