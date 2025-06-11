@@ -19,7 +19,10 @@ export const Route = () => {
             element={<Navigate to={ROUTE_PATH.SEASONS.href} replace />}
           />
           <RouterRoute path={ROUTE_PATH.SEASONS.href} element={<Seasons />} />
-          <RouterRoute path={ROUTE_PATH.RACE.href} element={<Races />} />
+          <RouterRoute
+            path={ROUTE_PATH.SEASON_RACES.href}
+            element={<Races />}
+          />
           <RouterRoute path='*' element={<PageNotFound />} />
         </RouterRoute>
       </Routes>

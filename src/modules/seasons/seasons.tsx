@@ -1,51 +1,49 @@
-import { Loader } from '@shared/components/ui/loader/loader';
+import { ErrorDisplay } from '@shared/components/ui/error/error';
 import { SeasonsList } from './components/seasons-list/seasons-list';
 import { useTranslation } from 'react-i18next';
+import { useAllSeasons } from './seasons.queries';
+import { AsyncRenderer } from '@shared/components/async-renderer/async-renderer';
+import type { Season } from '@api-types/index';
+import { useNavigate } from 'react-router';
+import { ROUTE_PATH } from '@shared/utils/constants';
+import { buildRoute } from '@shared/utils/utils';
 
 const Seasons = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { data, isLoading, error } = useAllSeasons();
+  const seasons = data?.data || [];
 
-  const seasonData = {
-    season: '2007',
-    points: '110',
-    championDriver: {
-      driverId: 'raikkonen',
-      name: 'Kimi Räikkönen',
-    },
-    championConstructor: {
-      constructorId: 'ferrari',
-      name: 'Ferrari',
-    },
+  const viewRacesHandler = (seasonData: Season) => {
+    void navigate(
+      buildRoute(ROUTE_PATH.SEASON_RACES.href, { year: seasonData.season }),
+    );
   };
-
-  // Create an array of sample seasons for the table
-  const seasonsArray = Array(12)
-    .fill(null)
-    .map((_, index) => ({
-      ...seasonData,
-      season: (2007 + index).toString(),
-    }));
-  const loading = false;
-
   return (
-    <>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='bg-gradient-to-r from-black to-gray-800 px-6 py-4 rounded-t-xl'>
-          <h2 className='text-xl font-bold text-white'>{t('seasons.title')}</h2>
-          <p className='text-gray-300 text-sm'>{t('seasons.description')}</p>
-        </div>
-        {loading ? (
-          <div className={`bg-white rounded-xl shadow-lg overflow-hidden`}>
-            <Loader
-              message={t('seasons.loading')}
-              subMessage={t('seasons.loadingSubText')}
-            />
+    <AsyncRenderer
+      loading={isLoading}
+      error={error}
+      data={data}
+      renderError={() => (
+        <ErrorDisplay
+          error={error}
+          title={t('seasons.error.title')}
+          message={t('seasons.error.message')}
+          showRefresh
+        />
+      )}
+      renderData={() => (
+        <>
+          <div className='bg-gradient-to-r from-black to-gray-800 px-6 py-4 rounded-t-xl'>
+            <h2 className='text-xl font-bold text-white'>
+              {t('seasons.title')}
+            </h2>
+            <p className='text-gray-300 text-sm'>{t('seasons.description')}</p>
           </div>
-        ) : (
-          <SeasonsList seasons={seasonsArray} />
-        )}
-      </div>
-    </>
+          <SeasonsList seasons={seasons} onViewDetails={viewRacesHandler} />
+        </>
+      )}
+    />
   );
 };
 

@@ -54,8 +54,18 @@ export interface Race {
 }
 
 // API Response Types
-export type SeasonsResponse = Season[];
-export type RacesResponse = Race[];
+export type SeasonsResponse = {
+  data: Season[];
+  message?: string;
+  count?: number;
+};
+export type RacesResponse = {
+  data: Race[];
+  message?: string;
+  count?: number;
+};
+
+// More specific response types with metadata
 
 // API Parameter Types
 export interface SeasonsParams {

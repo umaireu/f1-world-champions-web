@@ -1,4 +1,8 @@
 {
+  "button": {
+    "refresh": "Refresh",
+    "goBack": "Go Back"
+  },
   "pageNotFound": {
     "title": "Page Not Found",
     "description": "The page you're looking for doesn't exist or has been moved.",
@@ -34,8 +38,37 @@
     "showing": "Showing {{count}} championship seasons",
     "championship": "Formula 1 World Drivers' Championship",
     "loading": "Loading championship data...",
-    "loadingSubText": "Please wait while we fetch the results"
+    "loadingSubText": "Please wait while we fetch the results",
+    "error": {
+      "title": "Failed to load seasons",
+      "message": "Unable to fetch F1 season data. Please try again."
+    }
+  },
+  "races": {
+    "column": {
+      "id": "Id",
+      "raceName": "Race Name",
+      "circuitName": "Circuit Name",
+      "date": "Date",
+      "time": "Time",
+      "winnerDriver": "Winner Driver"
+    },
+    "title": "Races of season {{season}}",
+    "titleA11y": "Races of season {{season}}",
+    "description": "Races results showing race name, circuit name, date, time, and winner driver",
+    "descriptionA11y": "Races results showing race name, circuit name, date, time, and winner driver",
+    "noData": "No races data available for season {{season}}",
+    "loading": "Loading races data...",
+    "loadingSubText": "Please wait while we fetch the results",
+    "error": {
+      "title": "Failed to load races for season {{season}}",
+      "message": "Unable to fetch races data. Please try again."
+    }
   },
   "loading": "Loading...",
-  "noData": "No data available"
+  "noData": "No data available",
+  "error": {
+    "title": "Something went wrong",
+    "message": "Sorry, something went wrong. Please try again later."
+  }
 }

@@ -1,3 +1,15 @@
+export const buildRoute = (
+  template: string,
+  params: Record<string, string | number>,
+): string => {
+  return Object.keys(params).reduce((route, key) => {
+    return route.replace(`:${key}`, String(params[key]));
+  }, template);
+};
+
+// Following are utility functions for logging
+// no test case is required for these functions
+
 const logObject = (data: object) => {
   for (const [key, value] of Object.entries(data)) {
     console.log(`${key}:${value}`);

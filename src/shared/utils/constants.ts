@@ -3,7 +3,9 @@ export const ROUTE_PATH = {
   SEASONS: {
     href: '/seasons',
   },
-  RACE: { href: '/season/:year/races' },
+  SEASON_RACES: {
+    href: '/season/:year/races',
+  },
 };
 
 export const IS_DEV_ENV = import.meta.env.DEV;

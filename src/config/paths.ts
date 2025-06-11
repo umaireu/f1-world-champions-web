@@ -6,6 +6,7 @@ export const pathAliases = {
   '@assets': path.resolve(__dirname, '../assets'),
   '@shared': path.resolve(__dirname, '../shared'),
   '@api-types': path.resolve(__dirname, '../api-types'),
+  '@services': path.resolve(__dirname, '../shared/services'),
   '@src': path.resolve(__dirname, '..'),
 };
 
@@ -16,5 +17,6 @@ export const typescriptPaths = {
   '@assets': ['src/assets/*'],
   '@shared': ['src/shared/*'],
   '@api-types': ['src/api-types/*'],
+  '@services': ['src/shared/services/*'],
   '@src': ['src/'],
 };

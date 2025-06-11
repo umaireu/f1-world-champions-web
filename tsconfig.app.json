@@ -30,8 +30,9 @@
       "@assets/*": ["src/assets/*"],
       "@shared/*": ["src/shared/*"],
       "@api-types/*": ["src/api-types/*"],
+      "@services/*": ["src/shared/services/*"],
       "@src/*": ["src/*"]
     }
   },
-  "include": ["src", "src/setup.ts"]
+  "include": ["src", "src/setup.ts", "src/override.ts"]
 }
