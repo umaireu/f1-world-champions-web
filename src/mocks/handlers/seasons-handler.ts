@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import type { SeasonsResponse } from '@api-types/index';
 import { ENV_VARS } from '@utils/constants';
 import { SEASONS_ENDPOINTS } from '@modules/seasons/constants';
-import { MockSeasonsData } from '../mock-data/seasons-mock-data';
+import { MockSeasonsData } from '@mocks/mock-data/seasons-mock-data';
 
 const seasonsEndpoint = `${ENV_VARS.API_BASE_URL}${SEASONS_ENDPOINTS.GET_SEASONS}`;
 

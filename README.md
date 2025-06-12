@@ -1,80 +1,109 @@
-# 🏎️ F1 World Champions
+# F1 World Champions Web Application
 
-A modern web application showcasing Formula 1 World Champions throughout history.
+## About This App
 
-## 🚀 Tech Stack
+F1 World Champions is a modern web application that showcases Formula 1 racing data throughout history. Users can explore different F1 seasons, view race details, and discover information about world champions and their achievements.
 
-### **Frontend Framework**
+## Screenshots
 
-- **React 19** - Latest React with modern concurrent features
-- **TypeScript** - Type-safe development with strict configuration
-- **Vite** - Lightning-fast build tool with HMR
+> Note: Add actual screenshots here
 
-### **Development Tools**
+**Main Seasons View**
+![Seasons Page](./docs/screenshots/seasons-page.png)
 
-- **ESLint** - Comprehensive linting with strict TypeScript rules
-  - `@typescript-eslint/strict-type-checked` - Strict TypeScript linting
-  - `eslint-plugin-react` - React-specific rules and best practices
-  - `eslint-plugin-react-hooks` - React Hooks rules enforcement
-  - `eslint-plugin-jsx-a11y` - Accessibility linting for inclusive design
-  - `eslint-plugin-react-refresh` - Fast Refresh compatibility
-- **Prettier** - Automated code formatting with team consistency
-- **Husky** - Git hooks for automated quality checks
+**Race Details View**
+![Races Page](./docs/screenshots/races-page.png)
 
-### **Testing Infrastructure**
+**Responsive Design**
+![Mobile View](./docs/screenshots/mobile-view.png)
 
-- **Vitest** - Fast unit testing with Vite integration
-- **React Testing Library** - Component testing with user-centric approach
-- **jsdom** - Browser environment simulation
+## Technology Stack
 
-### **Code Quality & Git Workflow**
+**Frontend Framework**
 
-- **Conventional Commits** - Standardized commit message format
-- **Commitlint** - Automated commit message validation
-- **Pre-commit Hooks** - Automated checks before commits:
-  - Code formatting (Prettier)
-  - Linting (ESLint)
-- **Pre-push Hooks**
-  - Test execution (Vitest) before pushing
-  - Build verification before pushing
+- [React](https://react.dev/) with [TypeScript](https://www.typescriptlang.org/) for type-safe development
+- [Vite](https://vitejs.dev/) as the build tool for fast development and builds
+- [React Router](https://reactrouter.com/) for client-side routing and navigation
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
+- [TanStack Query](https://tanstack.com/query/latest) (React Query) for state management
+- [React i18next](https://react.i18next.com/) for multi-language support
+- [Vitest](https://vitest.dev/) for unit and integration testing
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for component testing
+- [MSW](https://mswjs.io/) (Mock Service Worker) for API mocking during tests
 
-### **TypeScript Configuration**
+## Development Tools
 
-- **Project References** - Organized TypeScript configuration
-  - `tsconfig.app.json` - Application code configuration
-  - `tsconfig.node.json` - Build tools configuration
-  - `tsconfig.vitest.json` - Testing environment configuration
+- [ESLint](https://eslint.org/) for code quality
+- [Prettier](https://prettier.io/) for consistent code formatting
+- [Husky](https://typicode.github.io/husky/) for Git hooks automation
+- [Conventional Commits](https://www.conventionalcommits.org/) for standardized commit messages
+- [Commitlint](https://commitlint.js.org/) for commit message validation
+- Pre-commit hooks for code quality checks
+- Pre-push hooks for test validation
 
-## 🛠️ Available Scripts
+## Project Directory Structure
 
-```bash
-# Development
-npm start          # Start development server
-npm run build      # Build for production
-npm run preview    # Preview production build
-
-# Code Quality
-npm run lint       # Run ESLint on all files
-npm run lint:fix   # Auto-fix ESLint issues
-npm run format     # Format code with Prettier
-npm run format:check # Check code formatting
-
-# Testing
-npm run test       # Run tests in watch mode
-npm run test:run   # Run tests once
-npm run test:coverage # Run tests with coverage report
-npm run test:ui    # Open Vitest UI interface
-
-# Git Workflow
-npm run commit     # Interactive conventional commit
+```
+src/
+├── api-types/         # TypeScript types for API responses
+├── assets/            # Static assets (images, icons, etc.)
+├── components/        # Reusable UI components
+│   ├── async-renderer/ # Handles loading/error states
+│   └── ui/            # Basic UI components (buttons, inputs)
+├── mocks/             # MSW mock handlers and test data
+│   ├── handlers/      # API request handlers for testing
+│   └── mock-data/     # Static mock data for tests
+├── modules/           # Feature-based modules
+│   ├── races/         # Race-related components and logic
+│   └── seasons/       # Season-related components and logic
+├── routes/            # Application routing configuration
+├── services/          # API service layers and HTTP client
+├── translations/      # i18n translation files
+└── utils/             # Utility functions and helpers
+    ├── constants/     # Application constants
+    └── test/          # Test utilities and setup
 ```
 
-## 🔧 Development Setup
+**Purpose of Key Directories:**
+
+- **api-types**: Contains TypeScript interfaces that match the backend API structure
+- **components**: Shared components used across multiple features
+- **modules**: Feature-specific code organized by domain (races, seasons)
+- **mocks**: Testing infrastructure for API mocking
+- **services**: Handles all external API communication
+- **utils**: Common utilities, constants, and helper functions
+
+## Environment Setup
+
+### Required Environment Variables
+
+Create a `.env` file in the root directory with these variables:
+
+```bash
+# API Configuration
+VITE_API_BASE_URL=http://localhost:3000/api
+
+```
+
+**Environment Variables Explained:**
+
+- `VITE_API_BASE_URL`: The base URL for your backend API
+
+Note: All environment variables for Vite must be prefixed with `VITE_` to be accessible in the browser.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- npm (comes with Node.js)
+
+### Installation Steps
 
 1. **Clone the repository**
 
    ```bash
-   git clone [repository-url]
+   git clone [https://github.com/umaireu/f1-world-champions-web]
    cd f1-world-champions-web
    ```
 
@@ -84,15 +113,105 @@ npm run commit     # Interactive conventional commit
    npm install
    ```
 
-3. **Start development server**
+3. **Set up environment variables**
+
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual values
+   ```
+
+4. **Start the development server**
+
    ```bash
    npm start
    ```
 
-## 📋 Git Workflow
+5. **Open your browser**
+   Navigate to `http://localhost:5173`
 
-This project enforces quality through automated checks:
+## Note
 
-- **Pre-commit**: Automatically formats code, runs linting, and executes tests
-- **Commit messages**: Must follow conventional commit format (`feat:`, `fix:`, etc.)
-- **Pre-push**: Ensures code builds successfully before pushing
+To run this application locally, you'll need to set up the API. The API repository and setup instructions can be found at: [https://github.com/umaireu/f1-world-champions-api]
+
+## Available Scripts
+
+```bash
+# Development
+npm start              # Start development server with hot reload
+npm run build          # Create production build
+npm run preview        # Preview production build locally
+
+# Code Quality
+npm run lint           # Check code with ESLint
+npm run lint:fix       # Auto-fix ESLint issues
+npm run format         # Format code with Prettier
+npm run format:check   # Check if code is properly formatted
+
+# Testing
+npm run test           # Run tests in watch mode
+npm run test:run       # Run all tests once
+npm run test:coverage  # Run tests with coverage report
+npm run test:ui        # Open Vitest testing interface
+
+# Git Workflow
+npm run commit         # Interactive conventional commit helper
+```
+
+## Pipeline and Merge Request Process
+
+Before any merge request can be approved and merged, all pipeline stages must be completed successfully:
+
+### Pipeline Stages
+
+1. **Install Dependencies**
+
+   - Install project dependencies
+
+2. **Linting**
+
+   - ESLint runs on all TypeScript/JavaScript files
+   - Code must pass all linting rules
+   - No TypeScript errors allowed
+
+3. **Testing**
+
+   - All existing tests must pass
+   - Coverage threshold must be maintained (minimum 70%)
+
+4. **Security**
+
+   - Codeql configured to detect vulnerability
+
+5. **Build Verification**
+
+   - Application must build successfully
+   - No build errors
+
+6. **Summary**
+
+   - Summary about pipeline
+
+## Common Issues and Solutions
+
+**Build errors after git pull:**
+
+```bash
+# Clear node modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Tests failing unexpectedly:**
+
+```bash
+# Clear test cache
+npm run test -- --clear-cache
+```
+
+**TypeScript errors:**
+
+```bash
+# Restart TypeScript service in your editor
+# Or run type check manually
+npx tsc --noEmit
+```

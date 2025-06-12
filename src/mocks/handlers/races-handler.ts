@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import type { RacesResponse } from '@api-types/index';
 import { ENV_VARS } from '@utils/constants';
 import { RACES_ENDPOINTS } from '@modules/races/constants';
-import { MockRacesData2025 } from '../mock-data/races-mock-data';
+import { MockRacesData2025 } from '@mocks/mock-data/races-mock-data';
 
 const racesEndpoint = `${ENV_VARS.API_BASE_URL}${RACES_ENDPOINTS.GET_SEASON_RACES}`;
 
