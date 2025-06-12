@@ -1,5 +1,7 @@
+import { ENV_VARS } from '@utils/constants';
+
 export const API_CONFIG = {
-  BASE_URL: `${import.meta.env.VITE_API_BASE_URL}`,
+  BASE_URL: ENV_VARS.API_BASE_URL,
   TIMEOUT: 10000, // 10 seconds
 } as const;
 

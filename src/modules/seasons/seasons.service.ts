@@ -18,7 +18,7 @@ export async function getSeasons(
   }
   try {
     const response = await httpClient.get<SeasonsResponse>(
-      SEASONS_ENDPOINTS.CHAMPIONS,
+      SEASONS_ENDPOINTS.GET_SEASONS,
       {
         params: {
           fromYear: params.fromYear,
