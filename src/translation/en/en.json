@@ -1,0 +1,74 @@
+{
+  "button": {
+    "refresh": "Refresh",
+    "goBack": "Go Back"
+  },
+  "pageNotFound": {
+    "title": "Page Not Found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "gotToHome": "Go to Home"
+  },
+  "errorFallback": {
+    "title": "Something went wrong",
+    "description": "We're sorry, but something went wrong. Please try again later.",
+    "reload": "Reload"
+  },
+  "a11y": {
+    "logo": "F1 Logo"
+  },
+  "footer": {
+    "copyright": "© {{year}} F1 World Champions. All rights reserved."
+  },
+  "seasons": {
+    "column": {
+      "season": "Season",
+      "points": "Points",
+      "driverChampion": "Champion",
+      "constructorChampion": "Constructor",
+      "actions": "Actions"
+    },
+    "title": "F1 World Champions",
+    "titleA11y": "F1 World Champions Table",
+    "description": "Championship results showing drivers, constructors, and points by season",
+    "descriptionA11y": "Championship results showing drivers, constructors, and points by season",
+    "viewRaces": "View Races",
+    "points": "Points",
+    "driverChampion": "Driver Champion",
+    "noData": "No championship data available",
+    "showing": "Showing {{count}} championship seasons",
+    "championship": "Formula 1 World Drivers' Championship",
+    "loading": "Loading championship data...",
+    "loadingSubText": "Please wait while we fetch the results",
+    "error": {
+      "title": "Failed to load seasons",
+      "message": "Unable to fetch F1 season data. Please try again."
+    }
+  },
+  "races": {
+    "column": {
+      "id": "Id",
+      "raceName": "Race Name",
+      "circuitName": "Circuit Name",
+      "date": "Date",
+      "time": "Time",
+      "winnerDriver": "Winner Driver"
+    },
+    "title": "Races of season {{season}}",
+    "titleA11y": "Races of season {{season}}",
+    "description": "Races results showing race name, circuit name, date, time, and winner driver",
+    "descriptionA11y": "Races results showing race name, circuit name, date, time, and winner driver",
+    "noData": "No races data available for season {{season}}",
+    "loading": "Loading races data...",
+    "loadingSubText": "Please wait while we fetch the results",
+    "error": {
+      "title": "Failed to load races for season {{season}}",
+      "message": "Unable to fetch races data. Please try again."
+    }
+  },
+  "loading": "Loading...",
+  "noData": "No data available",
+  "error": {
+    "title": "Something went wrong",
+    "message": "Sorry, something went wrong. Please try again later."
+  }
+}

@@ -21,7 +21,18 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Path Mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@assets/*": ["src/assets/*"],
+      "@shared/*": ["src/shared/*"],
+      "@api-types/*": ["src/api-types/*"],
+      "@services/*": ["src/shared/services/*"],
+      "@src/*": ["src/*"]
+    }
   },
-  "include": ["src", "src/setup.ts"]
+  "include": ["src", "src/setup.ts", "src/override.ts"]
 }
