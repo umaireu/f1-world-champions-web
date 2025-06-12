@@ -1,11 +1,9 @@
-import { render } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render } from '@utils/test/render';
 import App from './App';
 
-describe('App', () => {
-  it('renders F1 World Champions heading', () => {
-    const { baseElement } = render(<App />);
-
+describe('app component', () => {
+  it('should renders successfully', () => {
+    const { baseElement } = render({ ui: <App /> });
     expect(baseElement).toBeTruthy();
   });
 });

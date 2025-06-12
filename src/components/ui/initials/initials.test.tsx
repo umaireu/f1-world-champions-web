@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Initials } from './initials';
 
-describe('Initials component', () => {
+describe('initials component', () => {
   it('renders single name correctly', () => {
     render({ ui: <Initials name='John' /> });
     expect(screen.getByText('J')).toBeInTheDocument();

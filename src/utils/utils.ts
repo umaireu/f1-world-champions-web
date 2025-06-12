@@ -1,10 +1,10 @@
 export const buildRoute = (
-  template: string,
+  str: string,
   params: Record<string, string | number>,
 ): string => {
   return Object.keys(params).reduce((route, key) => {
     return route.replace(`:${key}`, String(params[key]));
-  }, template);
+  }, str);
 };
 
 // Following are utility functions for logging

@@ -10,4 +10,5 @@ export const pathAliases = {
   '@services': path.resolve(__dirname, './services'),
   '@translations': path.resolve(__dirname, './translations'),
   '@utils': path.resolve(__dirname, './utils'),
+  '@mocks': path.resolve(__dirname, './mocks'),
 };

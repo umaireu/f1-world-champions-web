@@ -23,16 +23,7 @@ export const AsyncRenderer = <T,>({
 
   if (loading) {
     return (
-      <>
-        {renderLoading ? (
-          renderLoading()
-        ) : (
-          <Loader
-            message={t('seasons.loading')}
-            subMessage={t('seasons.loadingSubText')}
-          />
-        )}
-      </>
+      <>{renderLoading ? renderLoading() : <Loader message={t('loading')} />}</>
     );
   }
 

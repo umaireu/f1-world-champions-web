@@ -1,6 +1,5 @@
 /**
  * React Query Hooks for Seasons
- * Co-located with seasons service for better organization
  */
 
 import { useQuery } from '@tanstack/react-query';
