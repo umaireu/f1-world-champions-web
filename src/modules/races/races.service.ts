@@ -1,7 +1,7 @@
-import { httpClient } from '@shared/services/http/http.client';
-import { buildRoute, logDetails } from '@shared/utils/utils';
+import { httpClient } from '@services/http/http.client';
+import { buildRoute, logDetails } from '@utils/utils';
 import type { RacesResponse } from '@api-types/index';
-import { IS_DEV_ENV } from '@shared/utils/constants';
+import { IS_DEV_ENV } from '@utils/constants';
 import { RACES_ENDPOINTS } from './constants';
 
 /**

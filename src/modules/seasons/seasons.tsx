@@ -1,12 +1,12 @@
-import { ErrorDisplay } from '@shared/components/ui/error/error';
+import { ErrorDisplay } from '@components/ui/error/error';
 import { SeasonsList } from './components/seasons-list/seasons-list';
 import { useTranslation } from 'react-i18next';
 import { useAllSeasons } from './seasons.queries';
-import { AsyncRenderer } from '@shared/components/async-renderer/async-renderer';
+import { AsyncRenderer } from '@components/async-renderer/async-renderer';
 import type { Season } from '@api-types/index';
 import { useNavigate } from 'react-router';
-import { ROUTE_PATH } from '@shared/utils/constants';
-import { buildRoute } from '@shared/utils/utils';
+import { ROUTE_PATH } from '@routes/constants';
+import { buildRoute } from '@utils/utils';
 
 const Seasons = () => {
   const { t } = useTranslation();

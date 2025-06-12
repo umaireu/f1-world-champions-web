@@ -1,6 +1,6 @@
-import { Table, type TableColumn } from '@shared/components/ui/table/table';
+import { Table, type TableColumn } from '@components/ui/table/table';
 import type { Race, WinnerDriver } from '@api-types/index';
-import { Initials } from '@shared/components/ui/initials/initials';
+import { Initials } from '@components/ui/initials/initials';
 import { useTranslation } from 'react-i18next';
 
 type RacesListProps = {

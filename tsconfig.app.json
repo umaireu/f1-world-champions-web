@@ -26,12 +26,14 @@
     /* Path Mapping */
     "baseUrl": ".",
     "paths": {
-      "@modules/*": ["src/modules/*"],
-      "@assets/*": ["src/assets/*"],
-      "@shared/*": ["src/shared/*"],
       "@api-types/*": ["src/api-types/*"],
-      "@services/*": ["src/shared/services/*"],
-      "@src/*": ["src/*"]
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@modules/*": ["src/modules/*"],
+      "@routes/*": ["src/routes/*"],
+      "@services/*": ["src/services/*"],
+      "@translations/*": ["src/translations/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["src", "src/setup.ts", "src/override.ts"]

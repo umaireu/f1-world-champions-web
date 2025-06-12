@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { RacesList } from './components/races-list/races-list';
 import { useNavigate, useParams } from 'react-router';
 import { useSeasonRaces } from './races.queries';
-import { AsyncRenderer } from '@shared/components/async-renderer/async-renderer';
-import { ErrorDisplay } from '@shared/components/ui/error/error';
-import { Button } from '@shared/components/ui/button/button';
-import { ROUTE_PATH } from '@shared/utils/constants';
+import { AsyncRenderer } from '@components/async-renderer/async-renderer';
+import { ErrorDisplay } from '@components/ui/error/error';
+import { Button } from '@components/ui/button/button';
+import { ROUTE_PATH } from '@routes/constants';
 
 const Races = () => {
   const { t } = useTranslation();

@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { pathAliases } from './src/config/paths';
+import { pathAliases } from './src/paths';
 
 export default defineConfig({
   plugins: [react()],

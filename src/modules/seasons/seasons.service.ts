@@ -1,7 +1,7 @@
-import { httpClient } from '@shared/services/http/http.client';
-import { logDetails } from '@shared/utils/utils';
+import { httpClient } from '@services/http/http.client';
+import { logDetails } from '@utils/utils';
 import type { SeasonsParams, SeasonsResponse } from '@api-types/index';
-import { IS_DEV_ENV } from '@shared/utils/constants';
+import { IS_DEV_ENV } from '@utils/constants';
 import { SEASONS_ENDPOINTS } from './constants';
 
 /**

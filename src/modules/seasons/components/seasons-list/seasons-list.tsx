@@ -1,11 +1,11 @@
-import { Table, type TableColumn } from '@shared/components/ui/table/table';
+import { Table, type TableColumn } from '@components/ui/table/table';
 import type {
   Season,
   ChampionDriver,
   ChampionConstructor,
 } from '@api-types/index';
-import { Initials } from '@shared/components/ui/initials/initials';
-import { Button } from '@shared/components/ui/button/button';
+import { Initials } from '@components/ui/initials/initials';
+import { Button } from '@components/ui/button/button';
 import { useTranslation } from 'react-i18next';
 
 type SeasonsListProps = {
