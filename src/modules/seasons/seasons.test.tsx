@@ -2,7 +2,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { render } from '@utils/test/render';
 import Seasons from './seasons';
 import i18next from 'i18next';
-import { MockSeasonsData } from '../../mocks/mock-data/seasons-mock-data';
+import { MockSeasonsData } from '@mocks/mock-data/seasons-mock-data';
 import { ROUTE_PATH } from '@routes/constants';
 import { buildRoute } from '@utils/utils';
 

@@ -1,5 +1,5 @@
 import i18n from '@translations/index';
-import { MockSeasonsData } from '../../../../mocks/mock-data/seasons-mock-data';
+import { MockSeasonsData } from '@mocks/mock-data/seasons-mock-data';
 import { SeasonsList } from './seasons-list';
 
 import { render } from '@utils/test/render';

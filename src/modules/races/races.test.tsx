@@ -2,7 +2,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { render } from '@utils/test/render';
 import Races from './races';
 import i18next from 'i18next';
-import { MockRacesData2025 } from '../../mocks/mock-data/races-mock-data';
+import { MockRacesData2025 } from '@mocks/mock-data/races-mock-data';
 import { ROUTE_PATH } from '@routes/constants';
 
 // Mock the navigate hook and useParams

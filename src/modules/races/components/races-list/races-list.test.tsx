@@ -1,5 +1,5 @@
 import i18n from '@translations/index';
-import { MockRacesData2025 } from '../../../../mocks/mock-data/races-mock-data';
+import { MockRacesData2025 } from '@mocks/mock-data/races-mock-data';
 import { RacesList } from './races-list';
 
 import { render } from '@utils/test/render';
