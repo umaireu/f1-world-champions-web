@@ -51,6 +51,8 @@ export interface Race {
   time: string;
   /** Race winner information */
   winnerDriver: WinnerDriver;
+  /** Indicates if this race winner became world champion */
+  isChampion?: boolean;
 }
 
 // API Response Types

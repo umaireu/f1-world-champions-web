@@ -21,6 +21,11 @@ export default defineConfig({
         'src/**/*.test.{js,ts,tsx}',
         'src/**/*.spec.{js,ts,tsx}',
         '**/*.d.ts',
+        '**/*constants.ts',
+        '**/*index.ts',
+        'src/api-types/**',
+        'src/config/*',
+        'src/translation/**',
         '**/*.config.*',
         'dist/',
         'src/main.tsx', // Exclude main.tsx from coverage as it's just setup

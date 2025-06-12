@@ -3,5 +3,5 @@ export const SEASONS_QUERY_KEYS = {
 } as const;
 
 export const SEASONS_ENDPOINTS = {
-  CHAMPIONS: '/seasons/champions',
+  CHAMPIONS: '/seasons',
 } as const;
