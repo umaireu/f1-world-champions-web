@@ -4,16 +4,18 @@ import { render as rtlRender } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import i18n from '../../translations';
 import { I18nextProvider } from 'react-i18next';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, type InitialEntry } from 'react-router';
 
 const render = ({
   ui,
   rtlOptions,
   withRouter,
+  routeInitialEntries,
 }: {
   ui: ReactElement;
   rtlOptions?: Omit<RenderOptions, 'wrapper'>;
   withRouter?: boolean;
+  routeInitialEntries?: InitialEntry[];
 }) => {
   const Wrapper = ({
     children,
@@ -25,7 +27,9 @@ const render = ({
     if (withRouter) {
       return (
         <I18nextProvider i18n={i18n}>
-          <MemoryRouter>{children}</MemoryRouter>
+          <MemoryRouter initialEntries={routeInitialEntries}>
+            {children}
+          </MemoryRouter>
         </I18nextProvider>
       );
     }

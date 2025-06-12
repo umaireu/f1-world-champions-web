@@ -64,7 +64,6 @@ describe('error fallback component', () => {
   });
 
   it('should call resetErrorBoundary and reload page when reload button is clicked', async () => {
-    const user = userEvent.setup();
     const { getByRole } = render({
       ui: (
         <ErrorFallBack
@@ -76,7 +75,7 @@ describe('error fallback component', () => {
     const button = getByRole('button', {
       name: i18next.t('errorFallback.reload'),
     });
-    await user.click(button);
+    await userEvent.click(button);
 
     expect(mockResetErrorBoundary).toHaveBeenCalledTimes(1);
     expect(mockReload).toHaveBeenCalledTimes(1);

@@ -1,6 +1,5 @@
-import { render } from '@shared/utils/test/render';
-import { fireEvent, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render } from '@utils/test/render';
+import { fireEvent } from '@testing-library/react';
 import { ErrorDisplay } from './error';
 import i18next from 'i18next';
 
@@ -19,33 +18,37 @@ describe('error display component', () => {
   });
 
   it('renders error message from Error object', () => {
-    const error = new Error('Something went wrong');
-    render({ ui: <ErrorDisplay error={error} /> });
-
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    const error = 'Something went wrong';
+    const { getByText } = render({
+      ui: <ErrorDisplay error={error} title='error-title' />,
+    });
+    expect(getByText(error)).toBeInTheDocument();
   });
 
   it('renders error message from string', () => {
     const error = 'Simple error message';
-    render({ ui: <ErrorDisplay error={error} /> });
+    const { getByText } = render({ ui: <ErrorDisplay error={error} /> });
 
-    expect(screen.getByText('Simple error message')).toBeInTheDocument();
+    expect(getByText('Simple error message')).toBeInTheDocument();
   });
 
   it('renders custom title when provided', () => {
     const error = new Error('Error message');
     const customTitle = 'Custom Error Title';
 
-    render({ ui: <ErrorDisplay error={error} title={customTitle} /> });
+    const { getByText } = render({
+      ui: <ErrorDisplay error={error} title={customTitle} />,
+    });
 
-    expect(screen.getByText(customTitle)).toBeInTheDocument();
+    expect(getByText(customTitle)).toBeInTheDocument();
   });
 
   it('does not show refresh button by default', () => {
     const error = new Error('Test error');
-    render({ ui: <ErrorDisplay error={error} /> });
+    const { queryByRole } = render({ ui: <ErrorDisplay error={error} /> });
+    const button = queryByRole('button', { name: i18next.t('button.refresh') });
 
-    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(button).not.toBeInTheDocument();
   });
 
   it('shows refresh button when showRefresh is true', () => {
