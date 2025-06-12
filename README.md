@@ -4,18 +4,9 @@
 
 F1 World Champions is a modern web application that showcases Formula 1 racing data throughout history. Users can explore different F1 seasons, view race details, and discover information about world champions and their achievements.
 
-## Screenshots
+## Working example
+![gif-gif](https://github.com/user-attachments/assets/1ff24a09-f5ab-45d8-84bc-0616eda1044b)
 
-> Note: Add actual screenshots here
-
-**Main Seasons View**
-![Seasons Page](./docs/screenshots/seasons-page.png)
-
-**Race Details View**
-![Races Page](./docs/screenshots/races-page.png)
-
-**Responsive Design**
-![Mobile View](./docs/screenshots/mobile-view.png)
 
 ## Technology Stack
 
@@ -177,6 +168,7 @@ Before any merge request can be approved and merged, all pipeline stages must be
 
    - All existing tests must pass
    - Coverage threshold must be maintained (minimum 70%)
+   - ![Screenshot 2025-06-12 at 17 31 11](https://github.com/user-attachments/assets/d5f287c9-8ece-4a9e-ab00-d098759b82bf)
 
 4. **Security**
 
@@ -190,6 +182,8 @@ Before any merge request can be approved and merged, all pipeline stages must be
 6. **Summary**
 
    - Summary about pipeline
+
+<img width="1710" alt="Screenshot 2025-06-12 at 16 53 53" src="https://github.com/user-attachments/assets/d5cfa16b-367b-4a47-9d8e-e9d03e7c462a" />
 
 ## Common Issues and Solutions
 
@@ -215,3 +209,11 @@ npm run test -- --clear-cache
 # Or run type check manually
 npx tsc --noEmit
 ```
+
+
+## Additional Screenshots
+
+**Error View**
+<img width="1314" alt="Screenshot 2025-06-12 at 17 40 42" src="https://github.com/user-attachments/assets/fb756e2f-58eb-4ccd-9287-384bc8084120" />
+
+
