@@ -99,7 +99,7 @@ jobs:
             exit 1
           fi
 
-  # Stage 5: Build
+    # Stage 5: Build
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -112,8 +112,26 @@ jobs:
       - name: setup-node-dependencies
         uses: ./.github/actions/setup-node-dependencies
 
+      - name: Create .env file from GitHub variables
+        run: |
+          echo "Creating .env file from GitHub variables..."
+          cat > .env << EOF
+          VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+          EOF
+
+          echo ".env file created successfully"
+          echo "Contents (with masked values):"
+          sed 's/=.*/=***/' .env
+
       - name: Build application
         run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
 
   # Stage 6: Summary
   pipeline-summary:
