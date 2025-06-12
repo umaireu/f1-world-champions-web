@@ -21,6 +21,7 @@ export const PageNotFound = () => {
         <div className='space-y-4'>
           <Link
             to={ROUTE_PATH.DEFAULT.href}
+            aria-label={t('pageNotFound.gotToHome')}
             className='inline-block text-white font-medium'>
             {t('pageNotFound.gotToHome')}
           </Link>
