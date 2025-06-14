@@ -1,35 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Suspense, type ErrorInfo } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Routes } from '@routes/routes';
+import { ErrorFallBack } from '@components/ui/error-fallback/error-fallback';
+import { logDetails } from '@utils/utils';
+import { Loader } from '@components/ui/loader';
+import { queryClient } from './services/query/query.client';
+import { BrowserRouter } from 'react-router';
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const onError = (error: Error, info: ErrorInfo) => {
+    logDetails({ additionalArgs: [{ info }], message: error });
+  };
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary FallbackComponent={ErrorFallBack} onError={onError}>
+        <Suspense fallback={<Loader fullPage />}>
+          <BrowserRouter>
+            <Routes />
+          </BrowserRouter>
+        </Suspense>
+      </ErrorBoundary>
+    </QueryClientProvider>
+  );
 }
-
-export default App
+export default App;

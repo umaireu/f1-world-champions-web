@@ -1,0 +1,159 @@
+name: CI Pipeline
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, develop]
+
+jobs:
+  # Stage 1: Install Dependencies
+  install-dependencies:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup node and install dependencies
+        uses: ./.github/actions/setup-node-dependencies
+
+  # Stage 2: Linting
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup-node-dependencies
+        uses: ./.github/actions/setup-node-dependencies
+
+      - name: Run ESLint
+        run: npm run lint
+
+  # Stage 3: Testing
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    needs: install-dependencies
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup-node-dependencies
+        uses: ./.github/actions/setup-node-dependencies
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+  # Stage 4: Security
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    needs: [install-dependencies, linting, test]
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup-node-dependencies
+        uses: ./.github/actions/setup-node-dependencies
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:javascript-typescript'
+          upload: true
+      - name: Check Dependencies Security
+        run: |
+          echo "Checking dependencies for security vulnerabilities..."
+          if npm audit --audit-level=moderate; then
+            echo "✅ No dependency vulnerabilities found"
+          else
+            echo "❌ Dependency vulnerabilities detected!"
+            npm audit --audit-level=moderate
+            exit 1
+          fi
+
+    # Stage 5: Build
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [install-dependencies, linting, test, security]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup-node-dependencies
+        uses: ./.github/actions/setup-node-dependencies
+
+      - name: Create .env file from GitHub variables
+        run: |
+          echo "Creating .env file from GitHub variables..."
+          cat > .env << EOF
+          VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+          EOF
+
+          echo ".env file created successfully"
+          echo "Contents (with masked values):"
+          sed 's/=.*/=***/' .env
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # Stage 6: Summary
+  pipeline-summary:
+    name: Pipeline Summary
+    runs-on: ubuntu-latest
+    needs: [install-dependencies, linting, test, security, build]
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate CI Summary
+        uses: ./.github/actions/pipeline-summary
+        with:
+          install-dependencies-result: ${{ needs.install-dependencies.result }}
+          linting-result: ${{ needs.linting.result }}
+          test-result: ${{ needs.test.result }}
+          security-result: ${{ needs.security.result }}
+          build-result: ${{ needs.build.result }}
+          github-event-name: ${{ github.event_name }}
+          github-event-number: ${{ github.event.number }}
+          github-base-ref: ${{ github.base_ref }}
+          github-ref-name: ${{ github.ref_name }}
+          default-branch: ${{ github.event.repository.default_branch }}
