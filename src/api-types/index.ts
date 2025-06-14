@@ -35,6 +35,8 @@ export interface WinnerDriver {
   driverId: string;
   /** Driver full name (e.g., "Lewis Hamilton") */
   name: string;
+  /** Indicates if this race winner became world champion */
+  isChampion?: boolean;
 }
 
 // Race Interface
@@ -51,8 +53,6 @@ export interface Race {
   time: string;
   /** Race winner information */
   winnerDriver: WinnerDriver;
-  /** Indicates if this race winner became world champion */
-  isChampion?: boolean;
 }
 
 // API Response Types

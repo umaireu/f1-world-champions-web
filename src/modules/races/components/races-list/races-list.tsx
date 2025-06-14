@@ -82,7 +82,7 @@ export const RacesList = ({ races }: RacesListProps) => {
 
   const getRowClassName = (race: Race): string => {
     // Highlight championship-winning race rows with a golden/yellow background
-    return race.isChampion
+    return race.winnerDriver.isChampion
       ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-400 hover:from-yellow-100 hover:to-amber-100'
       : '';
   };

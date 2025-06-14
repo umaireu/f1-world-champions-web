@@ -19,7 +19,7 @@
     "test:coverage": "vitest run --coverage",
     "test:coverage:ci": "vitest run --coverage --reporter=verbose",
     "test:ui": "vitest --ui",
-    "generate:types": "openapi-typescript http://localhost:3000/api-docs-json -o src/types/api.ts",
+    "generate:types": "openapi-typescript http://localhost:3000/api-docs-json -o src/api-types/api.ts",
     "commit": "cz",
     "preview": "vite preview",
     "prepare": "husky"

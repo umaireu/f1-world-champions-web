@@ -11,8 +11,8 @@ export const MockRacesData2025: Race[] = [
     winnerDriver: {
       driverId: 'verstappen',
       name: 'Max Verstappen',
+      isChampion: true,
     },
-    isChampion: true,
   },
   {
     id: 'saudi_arabia_2025',
@@ -23,8 +23,8 @@ export const MockRacesData2025: Race[] = [
     winnerDriver: {
       driverId: 'verstappen',
       name: 'Max Verstappen',
+      isChampion: true,
     },
-    isChampion: true,
   },
   {
     id: 'australia_2025',
@@ -35,8 +35,8 @@ export const MockRacesData2025: Race[] = [
     winnerDriver: {
       driverId: 'norris',
       name: 'Lando Norris',
+      isChampion: false,
     },
-    isChampion: false,
   },
 
   {
@@ -48,7 +48,7 @@ export const MockRacesData2025: Race[] = [
     winnerDriver: {
       driverId: 'leclerc',
       name: 'Charles Leclerc',
+      isChampion: false,
     },
-    isChampion: false,
   },
 ];
