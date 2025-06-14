@@ -1,36 +1,25 @@
-name: 'Setup'
-description: 'Setup Node.js and install dependencies with caching'
-
+name: 'Setup Environment'
+description: 'Sets up Node.js, handles node_modules cache, and installs dependencies'
+outputs:
+  cache-hit:
+    description: 'Whether the cache was hit'
+    value: ${{ steps.cache-node-modules.outputs.cache-hit }}
 runs:
   using: 'composite'
   steps:
-    - name: 🔧 Setup Node.js 20.x
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
-        cache: 'npm'
+        node-version: '20'
 
-    - name: Restore node_modules cache
-      id: cache-nodemodules
+    - name: Cache/Restore node_modules
+      id: cache-node-modules
       uses: actions/cache@v4
       with:
         path: node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
+        key: ${{ runner.os }}-node-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
 
-    - name: Install dependencies (if cache miss)
-      if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+    - name: Install Dependencies
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      shell: bash
       run: npm ci
-      shell: bash
-
-    - name: Dependencies ready
-      run: |
-        if [[ "${{ steps.cache-nodemodules.outputs.cache-hit }}" == "true" ]]; then
-          echo "Dependencies restored from cache"
-        else
-          echo "Dependencies installed and cached"
-        fi
-        echo "Node.js version: $(node --version)"
-        echo "npm version: $(npm --version)"
-      shell: bash
