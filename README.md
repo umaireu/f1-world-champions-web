@@ -215,6 +215,8 @@ npx tsc --noEmit
 **Highlight row (when winner is also that season’s champion) View**
 <img width="1709" alt="Screenshot 2025-06-14 at 22 36 50" src="https://github.com/user-attachments/assets/3ed6d9d6-f51b-46c8-8734-d47268de10f1" />
 
+**No data found View**
+<img width="1709" alt="Screenshot 2025-06-14 at 22 49 12" src="https://github.com/user-attachments/assets/06be6317-8dc3-42b6-b998-c5089cd37999" />
 
 **Error View**
 <img width="1314" alt="Screenshot 2025-06-12 at 17 40 42" src="https://github.com/user-attachments/assets/fb756e2f-58eb-4ccd-9287-384bc8084120" />
