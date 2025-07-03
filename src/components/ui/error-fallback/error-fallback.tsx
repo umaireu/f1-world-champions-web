@@ -18,22 +18,31 @@ export const ErrorFallBack = ({ error, resetErrorBoundary }: FallbackProps) => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+    <div
+      className='min-h-screen flex items-center justify-center bg-gray-50'
+      role='alert'>
       <div className='max-w-md mx-auto text-center'>
         <div className='mb-8'>
-          <p className='text-4xl font-bold text-black'>
+          <strong className='text-4xl font-bold text-black' id='error-title'>
             {t('errorFallback.title')}
-          </p>
+          </strong>
         </div>
 
         <div className='mb-8'>
-          <p className='text-2xl font-semibold text-gray-800 mb-4'>
+          <p
+            className='text-2xl font-semibold text-gray-800 mb-4'
+            id='error-message'
+            aria-describedby='error-title'>
             {t('errorFallback.description')}
           </p>
           <p className='text-gray-600 mb-6'>{t('pageNotFound.description')}</p>
         </div>
-        <Button onClick={handleReload} variant='primary'>
-          {t('errorFallback.reload')}
+        <Button
+          onClick={handleReload}
+          variant='primary'
+          aria-label={t('errorFallback.reload')}
+          aria-describedby='error-message'>
+          <span aria-hidden='true'>{t('errorFallback.reload')}</span>
         </Button>
       </div>
     </div>

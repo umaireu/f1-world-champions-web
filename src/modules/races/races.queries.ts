@@ -1,7 +1,3 @@
-/**
- * Query Hooks for Races
- */
-
 import { useQuery } from '@tanstack/react-query';
 import { RACES_QUERY_KEYS } from './constants';
 import { getSeasonRaces } from './races.service';

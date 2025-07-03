@@ -12,9 +12,9 @@ export const PageNotFound = () => {
         </div>
 
         <div className='mb-8'>
-          <h2 className='text-2xl font-semibold text-gray-800 mb-4'>
+          <strong className='text-2xl font-semibold text-gray-800 mb-4'>
             {t('pageNotFound.title')}
-          </h2>
+          </strong>
           <p className='text-gray-600 mb-6'>{t('pageNotFound.description')}</p>
         </div>
 

@@ -1,7 +1,6 @@
 import { httpClient } from '@services/http/http.client';
 import { logDetails } from '@utils/utils';
 import type { SeasonsParams, SeasonsResponse } from '@api-types/index';
-import { IS_DEV_ENV } from '@utils/constants';
 import { SEASONS_ENDPOINTS } from './constants';
 
 /**
@@ -10,12 +9,6 @@ import { SEASONS_ENDPOINTS } from './constants';
 export async function getSeasons(
   params: SeasonsParams,
 ): Promise<SeasonsResponse> {
-  if (IS_DEV_ENV) {
-    logDetails({
-      message: 'Getting seasons champions',
-      additionalArgs: [params],
-    });
-  }
   try {
     const response = await httpClient.get<SeasonsResponse>(
       SEASONS_ENDPOINTS.GET_SEASONS,
@@ -26,11 +19,7 @@ export async function getSeasons(
         },
       },
     );
-    if (IS_DEV_ENV) {
-      logDetails({
-        message: `Retrieved ${response.data.count} seasons`,
-      });
-    }
+
     return response.data;
   } catch (error) {
     logDetails({

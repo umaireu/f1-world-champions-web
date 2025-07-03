@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, TableHTMLAttributes } from 'react';
 import { Loader } from '@components/ui/loader';
 
 export interface TableColumn<T = object> {
@@ -6,17 +6,15 @@ export interface TableColumn<T = object> {
   header: string;
   accessor: keyof T;
   render?: (value: T[keyof T], row: T, index: number) => ReactNode;
-  sortable?: boolean;
   align?: 'left' | 'center' | 'right';
   width?: string;
   className?: string;
   isRowHeader?: boolean;
 }
 
-export interface TableProps<T = object> {
+type TableBaseProps<T = object> = {
   data: T[];
   columns: TableColumn<T>[];
-  caption?: string;
   loading?: boolean;
   emptyMessage?: string;
   className?: string;
@@ -24,17 +22,19 @@ export interface TableProps<T = object> {
   bodyClassName?: string;
   rowClassName?: string | ((row: T, index: number) => string);
   onRowClick?: (row: T, index: number) => void;
-  'aria-label'?: string;
-  'aria-describedby'?: string;
   loaderMessage?: string;
   loaderSubMessage?: string;
-  showCaptionVisually?: boolean;
-}
+};
+
+export type TableProps<T = object> = TableBaseProps<T> &
+  Pick<
+    TableHTMLAttributes<HTMLTableElement>,
+    'aria-label' | 'aria-describedby' | 'role'
+  >;
 
 export const Table = <T extends object>({
   data,
   columns,
-  caption,
   loading = false,
   emptyMessage,
   className = '',
@@ -44,9 +44,7 @@ export const Table = <T extends object>({
   onRowClick,
   loaderMessage,
   loaderSubMessage,
-  showCaptionVisually = false,
-  'aria-label': ariaLabel,
-  'aria-describedby': ariaDescribedby,
+  ...tableProps
 }: TableProps<T>) => {
   const getCellValue = (row: T, column: TableColumn<T>): T[keyof T] => {
     return row[column.accessor];
@@ -82,28 +80,13 @@ export const Table = <T extends object>({
     }
   };
 
-  const handleRowKeyDown = (
-    event: React.KeyboardEvent,
-    row: T,
-    index: number,
-  ) => {
-    if (onRowClick && (event.key === 'Enter' || event.key === ' ')) {
-      event.preventDefault();
-      onRowClick(row, index);
-    }
-  };
-
   const rowHeaderColumn = columns.find((col) => col.isRowHeader) || columns[0];
 
   if (loading) {
     return (
       <div
         className={`bg-white rounded-xl shadow-lg overflow-hidden ${className}`}>
-        <Loader
-          message={loaderMessage}
-          subMessage={loaderSubMessage}
-          aria-label={loaderMessage}
-        />
+        <Loader message={loaderMessage} subMessage={loaderSubMessage} />
       </div>
     );
   }
@@ -112,37 +95,20 @@ export const Table = <T extends object>({
     <div
       className={`bg-white rounded-xl shadow-lg overflow-hidden ${className}`}>
       <div className='overflow-x-auto'>
-        <table
-          className='w-full'
-          aria-label={ariaLabel}
-          aria-describedby={ariaDescribedby}
-          role='table'>
-          {caption && (
-            <caption
-              className={
-                showCaptionVisually
-                  ? 'px-6 py-3 text-lg font-semibold text-gray-900 text-left'
-                  : 'sr-only'
-              }>
-              {caption}
-            </caption>
-          )}
-
+        <table className='w-full' role='table' {...tableProps}>
           <thead className={`bg-gray-50 ${headerClassName}`}>
-            <tr role='row'>
-              {columns.map((column) => (
-                <th
-                  key={column.key}
-                  scope='col'
-                  className={`px-6 py-4 text-sm font-bold text-gray-900 uppercase tracking-wider ${getAlignmentClass(column.align)} ${column.className || ''}`}
-                  style={column.width ? { width: column.width } : undefined}
-                  role='columnheader'>
-                  <div className='flex items-center space-x-2'>
-                    <span>{column.header}</span>
-                  </div>
-                </th>
-              ))}
-            </tr>
+            {columns.map((column) => (
+              <th
+                key={column.key}
+                scope='col'
+                className={`px-6 py-4 text-sm font-bold text-gray-900 uppercase tracking-wider ${getAlignmentClass(column.align)} ${column.className || ''}`}
+                style={column.width ? { width: column.width } : undefined}
+                role='columnheader'>
+                <div className='flex items-center space-x-2'>
+                  <span>{column.header}</span>
+                </div>
+              </th>
+            ))}
           </thead>
 
           <tbody
@@ -151,8 +117,7 @@ export const Table = <T extends object>({
               <tr role='row'>
                 <td
                   colSpan={columns.length}
-                  className='px-6 py-12 text-center text-gray-500'
-                  aria-live='polite'>
+                  className='px-6 py-12 text-center text-gray-500'>
                   {emptyMessage}
                 </td>
               </tr>
@@ -162,14 +127,9 @@ export const Table = <T extends object>({
                   key={rowIndex}
                   className={getRowClassName(row, rowIndex)}
                   onClick={() => handleRowClick(row, rowIndex)}
-                  onKeyDown={(e) => handleRowKeyDown(e, row, rowIndex)}
                   tabIndex={onRowClick ? 0 : -1}
                   role='row'
-                  aria-label={
-                    onRowClick
-                      ? `Row ${rowIndex + 1}, click to view details`
-                      : undefined
-                  }>
+                  aria-label={`Row ${rowIndex + 1}`}>
                   {columns.map((column) => {
                     const cellValue = getCellValue(row, column);
                     const displayValue = column.render
@@ -182,15 +142,15 @@ export const Table = <T extends object>({
                       <th
                         key={`${rowIndex}-${column.key}`}
                         scope='row'
-                        className={`px-6 py-4 whitespace-nowrap font-medium ${getAlignmentClass(column.align)} ${column.className || ''}`}
+                        className={`px-6 py-4 whitespace-nowrap font-medium ${getAlignmentClass(column.align)} ${column.className ?? ''}`}
                         role='rowheader'>
-                        {displayValue as React.ReactNode}
+                        {displayValue as ReactNode}
                       </th>
                     ) : (
                       <td
                         key={`${rowIndex}-${column.key}`}
-                        className={`px-6 py-4 whitespace-nowrap ${getAlignmentClass(column.align)} ${column.className || ''}`}>
-                        {displayValue as React.ReactNode}
+                        className={`px-6 py-4 whitespace-nowrap ${getAlignmentClass(column.align)} ${column.className ?? ''}`}>
+                        {displayValue as ReactNode}
                       </td>
                     );
                   })}

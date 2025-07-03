@@ -6,4 +6,4 @@ export const ROUTE_PATH = {
   SEASON_RACES: {
     href: '/season/:year/races',
   },
-};
+} as const;
