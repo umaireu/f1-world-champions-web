@@ -97,18 +97,20 @@ export const Table = <T extends object>({
       <div className='overflow-x-auto'>
         <table className='w-full' role='table' {...tableProps}>
           <thead className={`bg-gray-50 ${headerClassName}`}>
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                scope='col'
-                className={`px-6 py-4 text-sm font-bold text-gray-900 uppercase tracking-wider ${getAlignmentClass(column.align)} ${column.className || ''}`}
-                style={column.width ? { width: column.width } : undefined}
-                role='columnheader'>
-                <div className='flex items-center space-x-2'>
-                  <span>{column.header}</span>
-                </div>
-              </th>
-            ))}
+            <tr>
+              {columns.map((column) => (
+                <th
+                  key={column.key}
+                  scope='col'
+                  className={`px-6 py-4 text-sm font-bold text-gray-900 uppercase tracking-wider ${getAlignmentClass(column.align)} ${column.className || ''}`}
+                  style={column.width ? { width: column.width } : undefined}
+                  role='columnheader'>
+                  <div className='flex items-center space-x-2'>
+                    <span>{column.header}</span>
+                  </div>
+                </th>
+              ))}
+            </tr>
           </thead>
 
           <tbody
