@@ -24,11 +24,7 @@ export const Loader = ({
     : `flex flex-col items-center justify-center py-16 ${className}`;
 
   return (
-    <div
-      className={containerClasses}
-      role='status'
-      aria-live='polite'
-      aria-label={message ?? t('loading')}>
+    <div className={containerClasses} role='status'>
       <div
         className={`animate-spin rounded-full border-b-2 mb-4 border-red-600 h-12 w-12`}
         aria-hidden='true'

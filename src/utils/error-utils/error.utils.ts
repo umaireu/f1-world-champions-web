@@ -14,18 +14,6 @@ export function getErrorMessage(error: unknown): string {
   return 'An unexpected error occurred';
 }
 
-/**
- * Convert any error to an Error object
- */
-export function toError(error: unknown): Error {
-  if (error instanceof Error) {
-    return error;
-  }
-
-  const message = getErrorMessage(error);
-  return new Error(message);
-}
-
 export function isNetworkError(error: unknown): boolean {
   if (error instanceof Error) {
     return (

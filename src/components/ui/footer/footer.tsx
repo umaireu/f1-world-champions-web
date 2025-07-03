@@ -5,7 +5,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className='bg-black'>
+    <footer className='bg-black' role='contentinfo'>
       <div className='flex flex-col justify-center items-center py-6'>
         <div className='text-gray-300 text-sm'>
           <p>{t('footer.copyright', { year: currentYear })}</p>

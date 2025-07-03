@@ -1,9 +1,4 @@
-import {
-  getErrorMessage,
-  toError,
-  isNetworkError,
-  getErrorTitle,
-} from './error.utils';
+import { getErrorMessage, isNetworkError, getErrorTitle } from './error.utils';
 
 describe('error utils', () => {
   describe('getErrorMessage', () => {
@@ -42,36 +37,6 @@ describe('error utils', () => {
     it('should return default message for object without message', () => {
       const error = { code: 500 };
       expect(getErrorMessage(error)).toBe('An unexpected error occurred');
-    });
-  });
-
-  describe('toError', () => {
-    it('should return Error instance as is', () => {
-      const error = new Error('Test error');
-      const result = toError(error);
-      expect(result).toBe(error);
-      expect(result).toBeInstanceOf(Error);
-    });
-
-    it('should convert string to Error', () => {
-      const error = 'String error';
-      const result = toError(error);
-      expect(result).toBeInstanceOf(Error);
-      expect(result.message).toBe('String error');
-    });
-
-    it('should convert object with message to Error', () => {
-      const error = { message: 'Object error' };
-      const result = toError(error);
-      expect(result).toBeInstanceOf(Error);
-      expect(result.message).toBe('Object error');
-    });
-
-    it('should convert unknown error to Error with default message', () => {
-      const error = { code: 500 };
-      const result = toError(error);
-      expect(result).toBeInstanceOf(Error);
-      expect(result.message).toBe('An unexpected error occurred');
     });
   });
 

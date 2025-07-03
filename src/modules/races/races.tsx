@@ -6,6 +6,7 @@ import { AsyncRenderer } from '@components/async-renderer/async-renderer';
 import { ErrorDisplay } from '@components/ui/error/error';
 import { Button } from '@components/ui/button/button';
 import { ROUTE_PATH } from '@routes/constants';
+import { useCallback } from 'react';
 
 const Races = () => {
   const { t } = useTranslation();
@@ -13,9 +14,11 @@ const Races = () => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useSeasonRaces(Number(year));
   const races = data?.data || [];
-  const handleGoBack = () => {
+
+  const handleGoBack = useCallback(() => {
     void navigate(ROUTE_PATH.SEASONS.href);
-  };
+  }, [navigate]);
+
   return (
     <div>
       <Button
@@ -39,9 +42,9 @@ const Races = () => {
         renderData={() => (
           <>
             <div className='bg-gradient-to-r from-black to-gray-800 px-6 py-4 rounded-t-xl'>
-              <h2 className='text-xl font-bold text-white'>
+              <p className='text-xl font-bold text-white'>
                 {t('races.title', { season: year })}
-              </h2>
+              </p>
               <p className='text-gray-300 text-sm'>{t('races.description')}</p>
             </div>
             <RacesList races={races} />

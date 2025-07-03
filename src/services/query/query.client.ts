@@ -6,10 +6,10 @@ export function createQueryClient(): QueryClient {
     defaultOptions: {
       queries: {
         // Cache configuration
-        gcTime: QUERY_CONFIG.CACHE_TIME, // Previously cacheTime
+        gcTime: QUERY_CONFIG.CACHE_TIME,
         staleTime: QUERY_CONFIG.STALE_TIME,
 
-        // Retry configuration - simple approach
+        // Retry configuration
         retry: (failureCount) => {
           return failureCount < QUERY_CONFIG.RETRY_COUNT;
         },
